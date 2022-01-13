@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using POCService.Controllers;
+using POCService.ControllersMysql;
 using SharedLib.Data;
 using SharedLib.DTO;
 using SharedLib.DTO.Requests;
@@ -12,12 +12,12 @@ namespace POCService
     {
         static void Main(string[] args)
         {
-            SetUp setup = new SetUp();
-            ServerController sc = new ServerController();
-            TagController tc = new TagController();
+            Console.WriteLine("Maak een keuze: sqlite of mysql");
+            ServerControllerS sc = new ServerControllerS();
+            TagControllerS tc = new TagControllerS();
             Console.WriteLine("choose: addReadings2, removeReadings, addTag, AddServer");            
             StartUp su = new StartUp();
-            var context = new EdgeDataContext();
+            var context = new EdgeDataContextMysql();
             var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
             //Guid test = servers[0].TagIds[0];
 

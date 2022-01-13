@@ -9,7 +9,7 @@ using System.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
 namespace POCService
 {
-    public class EdgeDataContext : DbContext
+    public class EdgeDataContextMysql : DbContext
     {
         public DbSet<ServerCredentials> ServerCredentials { get; set; }
         public DbSet<AppUser> AppUser { get; set; }
@@ -34,11 +34,11 @@ namespace POCService
             }
         }
 
-        public EdgeDataContext() : base()
+        public EdgeDataContextMysql() : base()
         {
            
         }
-        public EdgeDataContext(DbContextOptions options) : base(options)
+        public EdgeDataContextMysql(DbContextOptions options) : base(options)
         {
 
         }

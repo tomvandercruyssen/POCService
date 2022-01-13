@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POCService", "POCService\PO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLib", "SharedLib\SharedLib.csproj", "{0EFAD6FC-D83A-4649-8C46-BE7022330C5C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLite", "SQLite\SQLite.csproj", "{44F89E26-55CA-42A4-9B00-AE76F8A07963}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{0EFAD6FC-D83A-4649-8C46-BE7022330C5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EFAD6FC-D83A-4649-8C46-BE7022330C5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EFAD6FC-D83A-4649-8C46-BE7022330C5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44F89E26-55CA-42A4-9B00-AE76F8A07963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44F89E26-55CA-42A4-9B00-AE76F8A07963}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44F89E26-55CA-42A4-9B00-AE76F8A07963}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44F89E26-55CA-42A4-9B00-AE76F8A07963}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

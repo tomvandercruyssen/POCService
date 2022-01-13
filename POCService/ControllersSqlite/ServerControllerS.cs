@@ -7,15 +7,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace POCService.Controllers
+namespace POCService.ControllersMysql
 {
 
-    public class ServerController : ControllerBase
+    public class ServerControllerS : ControllerBase
     {
         public ActionResult<List<ServerDTO>> GetAllServers()
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            var _context = new EdgeDataContext();
+            var _context = new EdgeDataContextMysql();
             var servers = _context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
@@ -25,7 +25,7 @@ namespace POCService.Controllers
         public void addServer()
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            using (var _context = new EdgeDataContext())
+            using (var _context = new EdgeDataContextMysql())
             {
                 var s = new Server();
                 var result = _context.Server.Add(s);
@@ -35,7 +35,7 @@ namespace POCService.Controllers
         }
         public ActionResult<ServerDTO> UpdateServer(CreateServerResponse req)
         {
-            var _context = new EdgeDataContext();
+            var _context = new EdgeDataContextMysql();
             try
             {
                 var s = req.Server.FromDTO();

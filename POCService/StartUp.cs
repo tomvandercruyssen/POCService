@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using POCService.Controllers;
+using POCService.ControllersMysql;
 using SharedLib.Data;
 using SharedLib.DTO;
 using SharedLib.DTO.Requests;
 using System;
 using System.Linq;
-
+using SQLitePCL;
 namespace POCService
 {
     public class StartUp
@@ -16,7 +16,7 @@ namespace POCService
         public StartUp()
         {
             addServer();
-            var context = new EdgeDataContext();
+            var context = new EdgeDataContextMysql();
             var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
             addTag(servers[0].ServerId);
             addTag(servers[0].ServerId);

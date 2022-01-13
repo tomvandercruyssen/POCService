@@ -11,7 +11,7 @@ using SharedLib.Data;
 using System.Diagnostics;
 using System.Timers;
 
-namespace POCService.Controllers
+namespace POCService.ControllersMysql
 {
     public class TagController : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace POCService.Controllers
         public ActionResult<List<TagDTO>> GetAllTags()
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            var _context = new EdgeDataContext();
+            var _context = new EdgeDataContextMysql();
             try
             {
                 watch.Stop();
@@ -35,7 +35,7 @@ namespace POCService.Controllers
         }
         public ActionResult<TagDTO> UpdateTag(string id, TagDTO req)
         {
-            var _context = new EdgeDataContext();
+            var _context = new EdgeDataContextMysql();
             try
             {
                 var s = _context.Server.Find(id);
@@ -62,7 +62,7 @@ namespace POCService.Controllers
         }
         public void addReading(string tagid, Reading reading)
         {
-            var ctx = new EdgeDataContext();
+            var ctx = new EdgeDataContextMysql();
             var t = ctx.Tag.Find(tagid);
             if (t is null)
             {
@@ -82,7 +82,7 @@ namespace POCService.Controllers
         }
         public void deleteOldReadings()
         {
-            var ctx = new EdgeDataContext();
+            var ctx = new EdgeDataContextMysql();
             //var range = ctx.Reading.Where()
             //var range = ctx.WebServiceCall.Where(c => c.WebService.WebServiceId.Equals(item.WebServiceId)).OrderBy(c => c.Created).Take(1000).Where(c => c.Created.CompareTo(DateTime.UtcNow.AddHours(-item.HistoryHours)) < 0);
         }
@@ -98,7 +98,7 @@ namespace POCService.Controllers
             reading.UnsignedIntegerValue = 6874833;
             reading.FloatValue = 633.5423;
 
-            var context = new EdgeDataContext();
+            var context = new EdgeDataContextMysql();
             var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
             string test = servers[0].TagIds[0];
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -113,7 +113,7 @@ namespace POCService.Controllers
         public void removeReadings()
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            var ctx = new EdgeDataContext();
+            var ctx = new EdgeDataContextMysql();
             int count = 0;
             foreach (var item in ctx.Reading)
             {
