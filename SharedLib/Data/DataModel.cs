@@ -38,8 +38,11 @@ namespace SharedLib.Data
         [JsonPropertyName("value")]
         public string Value { get; set; }
     }
-    //[Index("TaxgId", 1)]
+
+    //[Index("TagId", 1)]
     //[Index("ReadingId", IsUnique = true)]
+    [Microsoft.EntityFrameworkCore.Index("Created", "TagId")]
+    [Microsoft.EntityFrameworkCore.Index("ReadingId", "Created", IsUnique = true)]
     public class Reading
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -121,19 +124,19 @@ namespace SharedLib.Data
         public uint LifetimeCount { get; set; } = 0;
         public bool ReconnectOnSubscriptionDelete { get; set; } = true;
         public bool Enabled { get; set; } = true;
-        [Required]
-        [ForeignKey("ServerCredentialsId")]
-        public ServerCredentials Credentials { get; set; }
+        //[Required]
+        //[ForeignKey("ServerCredentialsId")]
+        //public ServerCredentials Credentials { get; set; }
         public List<Tag> Tags { get; set; } = new List<Tag>();
     }
-    public class ServerCredentials
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key]
-        public string ServerCredentialsId { get; set; }// = new Guid();
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
+    //public class ServerCredentials
+    //{
+    //    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    //    [Key]
+    //    public string ServerCredentialsId { get; set; }// = new Guid();
+    //    public string Username { get; set; }
+    //    public string Password { get; set; }
+    //}
     public class Tag
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

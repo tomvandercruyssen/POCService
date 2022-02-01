@@ -99,7 +99,8 @@ namespace POCService.ControllersMysql
             reading.FloatValue = 633.5423;
 
             var context = new EdgeDataContextMysql();
-            var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
+            //var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
+            var servers = context.Server.Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
             string test = servers[0].TagIds[0];
             var watch = System.Diagnostics.Stopwatch.StartNew();
             for (int i = 0; i < 400000; i++)

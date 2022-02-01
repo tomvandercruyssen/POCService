@@ -11,7 +11,7 @@ namespace POCService
 {
     public class EdgeDataContextMysql : DbContext
     {
-        public DbSet<ServerCredentials> ServerCredentials { get; set; }
+        //public DbSet<ServerCredentials> ServerCredentials { get; set; }
         public DbSet<AppUser> AppUser { get; set; }
         public DbSet<Tag> Tag { get; set; }
         public DbSet<Server> Server { get; set; }

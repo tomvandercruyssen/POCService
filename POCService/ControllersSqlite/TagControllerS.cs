@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Timers;
 using SQLite;
 using SharedLib.DTOSQLite;
+using SharedLib.DataS;
 
 namespace POCService.ControllersMysql
 {
@@ -62,15 +63,15 @@ namespace POCService.ControllersMysql
                 return BadRequest(e.Message);
             }
         }
-        public void addReading(Guid tagid, Reading reading)
+        public void addReading(Guid tagid, ReadingSql reading)
         {
-            var ctx = new EdgeDataContextMysql();
+            var ctx = new EdgeDataContextSqlite();
             var t = ctx.Tag.Find(tagid);
             if (t is null)
             {
                 return;
             }
-            reading.Tag = t;
+            reading.TagS = t;
             try
             {
                 ctx.Reading.Update(reading);
@@ -92,16 +93,18 @@ namespace POCService.ControllersMysql
         Random rnd = new Random();
         public void addReadings2()
         {            
-            Reading reading = new Reading();
+            ReadingSql reading = new ReadingSql();
             reading.Created = DateTime.UtcNow;
-            reading.Quality = "quality";
+            reading.Quality = "TEST";
             reading.StringValue = "stringvalue";
             reading.IntegerValue = rnd.Next(0,100000000);
             reading.UnsignedIntegerValue = 6874833;
             reading.FloatValue = 633.5423;
 
             var context = new EdgeDataContextSqlite();
-            var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTOS(s)).ToList();
+            //var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTOS(s)).ToList();
+            var servers = context.Server.Include(s => s.Tags).Select(s => new ServerDTOS(s)).ToList();
+
             Guid test = servers[0].TagIds[0];
             var watch = System.Diagnostics.Stopwatch.StartNew();
             for (int i = 0; i < 400000; i++)

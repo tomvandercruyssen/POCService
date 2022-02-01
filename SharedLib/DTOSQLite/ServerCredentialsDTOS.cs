@@ -20,21 +20,21 @@ namespace SharedLib.DTOSQLite
 
         }
 
-        public ServerCredentialsDTOS(ServerCredentialsS cred)
-        {
-            ServerCredentialsId = cred.ServerCredentialsId;
-            Username = cred.Username;
-            Password = cred.Password;
-        }
+        //public ServerCredentialsDTOS(ServerCredentialsS cred)
+        //{
+        //    ServerCredentialsId = cred.ServerCredentialsId;
+        //    Username = cred.Username;
+        //    Password = cred.Password;
+        //}
 
-        public ServerCredentialsS FromDTO()
-        {
-            return new ServerCredentialsS()
-            {
-                ServerCredentialsId = ServerCredentialsId,
-                Username = Username,
-                Password = Password
-            };
-        }
+        //public ServerCredentialsS FromDTO()
+        //{
+        //    return new ServerCredentialsS()
+        //    {
+        //        ServerCredentialsId = ServerCredentialsId,
+        //        Username = Username,
+        //        Password = Password
+        //    };
+        //}
     }
 }

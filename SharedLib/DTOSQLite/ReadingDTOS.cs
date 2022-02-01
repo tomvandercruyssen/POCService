@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using SharedLib.Data;
+using SharedLib.DataS;
 
 namespace SharedLib.DTOSQLite
 {
@@ -33,7 +34,7 @@ namespace SharedLib.DTOSQLite
 
         }
 
-        public ReadingDTOS(ReadingS r)
+        public ReadingDTOS(ReadingSql r)
         {
             ReadingId = r.ReadingId;
             Created = r.Created;
@@ -45,9 +46,9 @@ namespace SharedLib.DTOSQLite
             // TagId = r.Tag.TagId;
         }
 
-        public ReadingS FromDTO()
+        public ReadingSql FromDTO()
         {
-            return new ReadingS()
+            return new ReadingSql()
             {
                 ReadingId = ReadingId,
                 Created = Created,

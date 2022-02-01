@@ -1,4 +1,5 @@
 ﻿using System;
+using SharedLib.DataS;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -63,7 +64,7 @@ namespace SharedLib.DTOSQLite
             LifetimeCount = s.LifetimeCount;
             ReconnectOnSubscriptionDelete = s.ReconnectOnSubscriptionDelete;
             Enabled = s.Enabled;
-            CredentialsId = s.Credentials.ServerCredentialsId;
+            //CredentialsId = s.Credentials.ServerCredentialsId;
             TagIds = s.Tags.Select(t => t.TagId).ToList();
             TagCount = (uint)s.Tags.Count();
         }

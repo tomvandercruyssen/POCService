@@ -64,7 +64,7 @@ namespace SharedLib.DTO
             LifetimeCount = s.LifetimeCount;
             ReconnectOnSubscriptionDelete = s.ReconnectOnSubscriptionDelete;
             Enabled = s.Enabled;
-            CredentialsId = s.Credentials.ServerCredentialsId;
+            //CredentialsId = s.Credentials.ServerCredentialsId;
             TagIds = s.Tags.Select(t => t.TagId).ToList();
             TagCount = (uint)s.Tags.Count();
         }

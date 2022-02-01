@@ -17,7 +17,8 @@ namespace POCService
         {
             addServer();
             var context = new EdgeDataContextMysql();
-            var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
+            //var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
+            var servers = context.Server.Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
             addTag(servers[0].ServerId);
             addTag(servers[0].ServerId);
             var watch = System.Diagnostics.Stopwatch.StartNew();

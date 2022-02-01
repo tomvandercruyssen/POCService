@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SharedLib.Data;
 using SharedLib.Enums;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
-namespace SharedLib.Data
+
+namespace SharedLib.DataS
 {
     public class AppUserS
     {
@@ -37,7 +39,7 @@ namespace SharedLib.Data
         [JsonPropertyName("value")]
         public string Value { get; set; }
     }
-    public class ReadingS
+    public class ReadingSql
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
@@ -50,12 +52,12 @@ namespace SharedLib.Data
         public double FloatValue { get; set; }
         [Required]
         [ForeignKey("TagId")]
-        public Tag Tag { get; set; }
+        public TagS TagS { get; set; }
 
         public string GetValueString()
         {
             string s = "";
-            switch (Tag.Type.ToLower())
+            switch (TagS.Type.ToLower())
             {
                 case "string":
                     s = StringValue;
@@ -76,7 +78,7 @@ namespace SharedLib.Data
         }
         public void AddValue(object value)
         {
-            switch (Tag.Type.ToLower())
+            switch (TagS.Type.ToLower())
             {
                 case "string":
                     StringValue = value as string;
@@ -117,19 +119,19 @@ namespace SharedLib.Data
         public uint LifetimeCount { get; set; } = 0;
         public bool ReconnectOnSubscriptionDelete { get; set; } = true;
         public bool Enabled { get; set; } = true;
-        [Required]
-        [ForeignKey("ServerCredentialsId")]
-        public ServerCredentialsS Credentials { get; set; }
+        //[Required]
+        //[ForeignKey("ServerCredentialsId")]
+        //public ServerCredentialsS Credentials { get; set; }
         public List<TagS> Tags { get; set; } = new List<TagS>();
     }
-    public class ServerCredentialsS
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Key]
-        public Guid ServerCredentialsId { get; set; } = new Guid();
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
+    //public class ServerCredentialsS
+    //{
+    //    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    //    [Key]
+    //    public Guid ServerCredentialsId { get; set; } = new Guid();
+    //    public string Username { get; set; }
+    //    public string Password { get; set; }
+    //}
     public class TagS
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -146,7 +148,7 @@ namespace SharedLib.Data
         [ForeignKey("ServerId")]
         public ServerS Server { get; set; }
         public List<WebServiceElement> WebServiceElements { get; set; } = new List<WebServiceElement>();
-        public List<Reading> Readings { get; set; } = new List<Reading>();
+        public List<Reading> ReadingList { get; set; } = new List<Reading>();
     }
     public class SupportedTypeS
     {

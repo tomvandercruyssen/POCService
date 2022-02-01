@@ -16,9 +16,10 @@ namespace POCService
             ServerControllerS sc = new ServerControllerS();
             TagControllerS tc = new TagControllerS();
             Console.WriteLine("choose: addReadings2, removeReadings, addTag, AddServer");            
-            StartUp su = new StartUp();
-            var context = new EdgeDataContextMysql();
-            var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
+            //StartUp su = new StartUp();
+            //var context = new EdgeDataContextMysql();
+            //var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
+            //var servers = context.Server.Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
             //Guid test = servers[0].TagIds[0];
 
             Console.WriteLine("start waarden voltooid");
@@ -41,9 +42,7 @@ namespace POCService
                     Console.WriteLine("can't find query");
                     break;
             }
-        }
-
-        
+        }     
 
         
     }

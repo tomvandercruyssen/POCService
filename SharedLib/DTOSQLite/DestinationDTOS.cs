@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using SharedLib.Data;
+using SharedLib.DataS;
 
 namespace SharedLib.DTOSQLite
 {

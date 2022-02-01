@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using SharedLib.Data;
+using SharedLib.DataS;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,11 +12,11 @@ namespace SQLite
 {
     public class EdgeDataContextSqlite : DbContext
     {
-        public DbSet<ServerCredentialsS> ServerCredentials { get; set; }
+        //public DbSet<ServerCredentialsS> ServerCredentials { get; set; }
         public DbSet<AppUserS> AppUser { get; set; }
         public DbSet<TagS> Tag { get; set; }
         public DbSet<ServerS> Server { get; set; }
-        public DbSet<ReadingS> Reading { get; set; }
+        public DbSet<ReadingSql> Reading { get; set; }
         public DbSet<SupportedType> SupportedType { get; set; }
         public DbSet<Destination> Destination { get; set; }
         public DbSet<WebServiceGroup> WebServiceGroup { get; set; }

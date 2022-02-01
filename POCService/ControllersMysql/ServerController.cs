@@ -16,7 +16,8 @@ namespace POCService.ControllersMysql
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var _context = new EdgeDataContextMysql();
-            var servers = _context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
+            //var servers = _context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
+            var servers = _context.Server.Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
             return servers;
@@ -39,11 +40,11 @@ namespace POCService.ControllersMysql
             try
             {
                 var s = req.Server.FromDTO();
-                s.Credentials = new ServerCredentials()
-                {
-                    Username = "tom",
-                    Password = "azerty123"
-                };
+                //s.Credentials = new ServerCredentials()
+                //{
+                //    Username = "tom",
+                //    Password = "azerty123"
+                //};
                 var result = _context.Server.Update(s);
                 _context.SaveChanges();
                 var entity = result.Entity;
