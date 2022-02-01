@@ -41,8 +41,8 @@ namespace SharedLib.Data
 
     //[Index("TagId", 1)]
     //[Index("ReadingId", IsUnique = true)]
-    [Microsoft.EntityFrameworkCore.Index("Created", "TagId")]
-    [Microsoft.EntityFrameworkCore.Index("ReadingId", "Created", IsUnique = true)]
+    //[Microsoft.EntityFrameworkCore.Index("Created", "TagId")]
+    //[Microsoft.EntityFrameworkCore.Index("ReadingId", "Created", IsUnique = true)]
     public class Reading
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
