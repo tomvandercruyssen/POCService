@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using POCService.ControllersMysql;
-using SharedLib.Data;
-using SharedLib.DTO;
-using SharedLib.DTO.Requests;
+using POCService.Controllers;
+using POCService.Enums;
 
 namespace POCService
 {
@@ -12,35 +8,68 @@ namespace POCService
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Maak een keuze: sqlite of mysql");
-            ServerControllerS sc = new ServerControllerS();
-            TagControllerS tc = new TagControllerS();
-            Console.WriteLine("choose: addReadings2, removeReadings, addTag, AddServer");            
-            StartUp su = new StartUp();
-            var context = new EdgeDataContextMysql();
-            var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
-            //Guid test = servers[0].TagIds[0];
+            BaseController _controller = new SQLiteController();
+            bool _continue = true;
 
-            Console.WriteLine("start waarden voltooid");
-            string query = Console.ReadLine();
-            switch (query)
+            while (_continue)
             {
-                case "addReadings2":
-                    tc.addReadings2();
-                    break;
-
-                case "removeReadings":
-                    tc.removeReadings();
-                    break;
-
-                case "addServer":
-                    sc.addServer();
-                    break;
-
-                default:
-                    Console.WriteLine("can't find query");
-                    break;
+                try
+                {
+                    Console.WriteLine("Maak een keuze: [0] MySQL of [1] SQLite");
+                    string techQuery = Console.ReadLine();
+                    TechnologiesEnum tech = Enum.Parse<TechnologiesEnum>(techQuery);
+                    switch (tech)
+                    {
+                        case TechnologiesEnum.MySQL:
+                            _controller = new MySQLController();
+                            _continue = false;
+                            break;
+                        case TechnologiesEnum.SQLite:
+                            _controller = new SQLiteController();
+                            _continue = false;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine("Incorrect Input");
+                }
             }
+
+            _continue = true;
+            while (_continue)
+            {
+                try
+                {
+                    Console.WriteLine("choose: [0] Add Readings, [1] Remove Readings, [2] Add Tag, [3] Add Server");
+                    string queryQuery = Console.ReadLine();
+                    QueriesEnum query = Enum.Parse<QueriesEnum>(queryQuery);
+
+                    switch (query)
+                    {
+                        case QueriesEnum.ADDREADINGS:
+                            break;
+                        case QueriesEnum.REMOVEREADINGS:
+                            break;
+                        case QueriesEnum.ADDTAG:
+                            break;
+                        case QueriesEnum.ADDSERVER:
+                            _controller.addServer();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine("Incorrect Input");
+                }
+            }
+
         }
 
         
