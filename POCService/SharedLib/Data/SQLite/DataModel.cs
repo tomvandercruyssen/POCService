@@ -110,9 +110,9 @@ namespace SharedLib.Data.SQLite
         public string Endpoint { get; set; }
         public string Protocol { get; set; }
         public string TimeZone { get; set; }
-        public uint PublishingInterval { get; set; } = 1000;
+        public uint PublishingInterval { get; set; } = 4000;
         public uint MaxNotifications { get; set; } = 0;
-        public uint SessionTimeOut { get; set; } = 10000;
+        public uint SessionTimeOut { get; set; } = 40000;
         public uint MaxKeepAlive { get; set; } = 0;
         public uint LifetimeCount { get; set; } = 0;
         public bool ReconnectOnSubscriptionDelete { get; set; } = true;

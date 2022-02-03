@@ -110,7 +110,6 @@ namespace POCService.Controllers.SQLite
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var ctx = new EdgeDataContext();
-            int count = 0;
             foreach (var item in ctx.Reading)
             {
                 try
@@ -119,7 +118,7 @@ namespace POCService.Controllers.SQLite
                         ctx.Reading.Remove(item);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                 }
             }

@@ -44,10 +44,6 @@ namespace SharedLib.DTOSQLite
         [JsonPropertyName("connectionState")]
         public ConnectionStates ConnectionState { get; set; }
 
-        public ServerDTO()
-        {
-
-        }
 
         public ServerDTO(Server s)
         {
