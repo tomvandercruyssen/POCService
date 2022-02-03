@@ -53,10 +53,12 @@ namespace POCService
                     switch (query)
                     {
                         case QueriesEnum.ADDREADINGS:
+                            Console.WriteLine("Hoeveel readings?");
                             number = int.Parse(Console.ReadLine());
                             _controller.addReadings(number);                            
                             break;
                         case QueriesEnum.REMOVEREADINGS:
+                            Console.WriteLine("Hoeveel readings?");
                             number = int.Parse(Console.ReadLine());
                             _controller.removeReadings(number);
                             break;

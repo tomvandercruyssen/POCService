@@ -8,6 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using POCService.Logging;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Data.Entity.Infrastructure.Interception;
+using System.Data.Common;
 
 namespace POCService.Controllers
 {
@@ -18,72 +21,18 @@ namespace POCService.Controllers
 
         private string query;
 
-        public ActionResult<List<ServerDTO>> GetAllServers { 
-            get => throw new NotImplementedException(); 
-            set => throw new NotImplementedException(); 
-        }
-        //mag weg
-        ActionResult<List<SharedLib.DTOSQLite.ServerDTO>> BaseController.GetAllServers { 
-            get => throw new NotImplementedException(); 
-           // set => throw new NotImplementedException(); 
-        }
-
         public void addReadings(int numberOfReadings)
         {
             startTimer();
+            _tagController.addReadings(numberOfReadings);
             query = "addReading n=" + numberOfReadings.ToString();
-            var _context = new EdgeDataContext();
-            var servers = _context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
-
-            string test = servers[0].TagIds[0];
-            for (int i = 0; i < numberOfReadings; i++)
-            {
-                addReading(test);
-            }
             stopTimer();
-        }
-
-        public void addReading(string tagid)
-        {
-            var _context = new EdgeDataContext();
-            var t = _context.Tag.Find(tagid);
-
-            Random rnd = new Random();
-            Reading reading = new Reading();
-            reading.Created = DateTime.UtcNow;
-            reading.Quality = "TEST";
-            reading.StringValue = "stringvalue";
-            reading.IntegerValue = rnd.Next(0, 100000000);
-            reading.UnsignedIntegerValue = 6874833;
-            reading.FloatValue = 633.5423;
-
-            if (t is null)
-            {
-                return;
-            }
-            reading.Tag = t;
-            try
-            {
-                _context.Reading.Add(reading);
-                _context.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                addReading(tagid);
-                return;
-            }
-        }
+        }        
 
         public void addServer()
         {
             startTimer();
-            query = "addServer";
-            using (var _context = new EdgeDataContext())
-            {
-                var s = new Server();
-                var result = _context.Server.Add(s);
-                _context.SaveChanges();
-            }
+            _serverController.addServer();
             stopTimer();
         }
 
@@ -92,56 +41,12 @@ namespace POCService.Controllers
         {
             startTimer();
             query = "removeReadings n=" + number.ToString();
-            var _context = new EdgeDataContext();
-            foreach (var item in _context.Reading)
-            {
-                try
-                {
-                    if ((DateTime.UtcNow - item.Created).TotalSeconds > 3600)
-                    {
-                        _context.Reading.Remove(item);
-                    }
-                }
-                catch (Exception)
-                {
-                }
-            }
-            _context.SaveChanges();
             stopTimer();
         }
 
-        //tagcontroller?
-        public void addTag(Guid id, TagDTO req)
+        public void addTag()
         {
-            var _context = new EdgeDataContext();
-            try
-            {
-                var s = _context.Server.Find(id);
-                if (s is null)
-                {
-                    //return BadRequest("No server was found with the given id");
-                }
-                var t = req.FromDTO();
-                t.Server = s;
-                var result = _context.Tag.Update(t);
-
-                _context.SaveChanges();
-                var entity = result.Entity;
-                //return Ok(new TagDTO(entity));
-            }
-            catch (AggregateException)
-            {
-                //return BadRequest(e.InnerException.Message);
-            }
-            catch (Exception)
-            {
-                //return BadRequest(e.Message);
-            }
-        }
-
-        public void addTag(Guid id, SharedLib.DTOSQLite.TagDTO req)
-        {
-            throw new NotImplementedException();
+            _tagController.addTag();
         }
 
         System.Diagnostics.Stopwatch watch;
@@ -170,4 +75,5 @@ namespace POCService.Controllers
             }
         }
     }
+
 }

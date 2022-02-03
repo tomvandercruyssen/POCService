@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Sqlite;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using SharedLib.Data.SQLite;
 
 namespace POCService.DataContexts.SQLite
 {
+    
     public class EdgeDataContext : DbContext
     {
         public DbSet<ServerCredentials> ServerCredentials { get; set; }
@@ -20,8 +23,17 @@ namespace POCService.DataContexts.SQLite
         public DbSet<WebServiceCall> WebServiceCall { get; set; }
         public DbSet<GlobalConfig> GlobalConfig { get; set; }
         public DbSet<LogEntry> LogEntry { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlite(@"Data Source=C:\Users\tomcr\source\repos\POCService\POCService\edgedata.db; foreign keys=True;");
-        
+
+        public static readonly ILoggerFactory loggerFactory = new LoggerFactory(
+            new[] { new ConsoleLoggerProvider((_, __) => true, true) }
+        );
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLoggerFactory(loggerFactory)  //tie-up DbContext with LoggerFactory object
+            .EnableSensitiveDataLogging()
+                .UseSqlite(@"Data Source=C:\Users\tomcr\source\repos\POCService\POCService\edgedata.db; foreign keys=True;");
+        }
+
         public EdgeDataContext() : base()
         {
 

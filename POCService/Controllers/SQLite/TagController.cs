@@ -11,7 +11,9 @@ namespace POCService.Controllers.SQLite
 {
     public class TagController : ControllerBase
     {
-        
+
+        private ServerController _serverController = new ServerController();
+
         public ActionResult<List<TagDTO>> GetAllTags()
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -29,17 +31,27 @@ namespace POCService.Controllers.SQLite
                 return BadRequest(e.Message);
             }
         }
-        public ActionResult<TagDTO> UpdateTag(Guid id, TagDTO req)
+        public ActionResult<TagDTO> addTag()
         {
             var _context = new EdgeDataContext();
             try
             {
-                var s = _context.Server.Find(id);
+                var s = _serverController.getServer().Value[0];
                 if (s is null)
                 {
                     return BadRequest("No server was found with the given id");
                 }
-                var t = req.FromDTO();
+                var tag = new TagDTO()
+                {
+                    Name = "tag1",
+                    NodeId = "ns=2;s=len009",
+                    Type = "uint",
+                    BufferHours = (uint)1,
+                    SamplingInterval = (uint)1000,
+                    QueueSize = (uint)1000,
+                    DiscardOldest = true
+                };
+                var t = tag.FromDTO();
                 t.Server = s;
                 var result = _context.Tag.Update(t);
 
@@ -47,19 +59,37 @@ namespace POCService.Controllers.SQLite
                 var entity = result.Entity;
                 return Ok(new TagDTO(entity));
             }
-            catch (AggregateException e)
-            {
-                return BadRequest(e.InnerException.Message);
-            }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
         }
-        public void addReading(Guid tagid, Reading reading)
+        Random rnd = new Random();
+        public void addReadings(int numberOfReadings)
         {
-            var ctx = new EdgeDataContext();
-            var t = ctx.Tag.Find(tagid);
+            //query = "addReading n=" + numberOfReadings.ToString();
+            var _context = new EdgeDataContext();
+            var servers = _context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
+            Guid id = servers[0].TagIds[0];
+            for (int i = 0; i < numberOfReadings; i++)
+            {
+                addReading(id);
+            }
+        }
+        public void addReading(Guid tagid)
+        {
+            var _context = new EdgeDataContext();
+            var t = _context.Tag.Find(tagid);
+
+            Random rnd = new Random();
+            Reading reading = new Reading();
+            reading.Created = DateTime.UtcNow;
+            reading.Quality = "TEST";
+            reading.StringValue = "stringvalue";
+            reading.IntegerValue = rnd.Next(0, 100000000);
+            reading.UnsignedIntegerValue = 6874833;
+            reading.FloatValue = 633.5423;
+
             if (t is null)
             {
                 return;
@@ -67,65 +97,34 @@ namespace POCService.Controllers.SQLite
             reading.Tag = t;
             try
             {
-                ctx.Reading.Update(reading);
-                ctx.SaveChanges();
+                var result = _context.Reading.Add(reading);
+                _context.SaveChanges();
             }
             catch (DbUpdateException)
             {
-                addReading(tagid, reading);
+                addReading(tagid);
                 return;
             }
-        }
-        public void deleteOldReadings()
-        {
-            var ctx = new EdgeDataContext();
-            //var range = ctx.Reading.Where()
-            //var range = ctx.WebServiceCall.Where(c => c.WebService.WebServiceId.Equals(item.WebServiceId)).OrderBy(c => c.Created).Take(1000).Where(c => c.Created.CompareTo(DateTime.UtcNow.AddHours(-item.HistoryHours)) < 0);
-        }
-
-        Random rnd = new Random();
-        public void addReadings2()
-        {            
-            Reading reading = new Reading();
-            reading.Created = DateTime.UtcNow;
-            reading.Quality = "quality";
-            reading.StringValue = "stringvalue";
-            reading.IntegerValue = rnd.Next(0,100000000);
-            reading.UnsignedIntegerValue = 6874833;
-            reading.FloatValue = 633.5423;
-
-            var context = new EdgeDataContext();
-            var servers = context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
-            Guid test = servers[0].TagIds[0];
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            for (int i = 0; i < 400000; i++)
-            {
-                addReading(test, reading);
-            }
-            watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds);
         }
 
         public void removeReadings()
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var ctx = new EdgeDataContext();
-            foreach (var item in ctx.Reading)
+
+            var _context = new EdgeDataContext();
+            foreach (var item in _context.Reading)
             {
                 try
                 {
-                    if((DateTime.UtcNow - item.Created).TotalSeconds > 3600) {
-                        ctx.Reading.Remove(item);
+                    if ((DateTime.UtcNow - item.Created).TotalSeconds > 3600)
+                    {
+                        _context.Reading.Remove(item);
                     }
                 }
                 catch (Exception)
                 {
                 }
             }
-            
-            ctx.SaveChanges(); //ctx.SaveChanges().Compareto //oldCTX of oldCTX.count
-            watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds);
+            var result = _context.SaveChanges();
         }
 
     }
