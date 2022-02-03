@@ -29,6 +29,26 @@ namespace POCService.Controllers
 
         public void addReadings(int numberOfReadings)
         {
+            
+
+            var _context = new EdgeDataContext();
+            var servers = _context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
+
+            Guid test = servers[0].TagIds[0];
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            for (int i = 0; i < numberOfReadings; i++)
+            {
+                addReading(test);
+            }
+            watch.Stop();
+            Console.WriteLine(watch.ElapsedMilliseconds);
+        }
+
+        public void addReading(Guid tagid)
+        {
+            var _context = new EdgeDataContext();
+            var t = _context.Tag.Find(tagid);
+
             Random rnd = new Random();
             Reading reading = new Reading();
             reading.Created = DateTime.UtcNow;
@@ -38,22 +58,6 @@ namespace POCService.Controllers
             reading.UnsignedIntegerValue = 6874833;
             reading.FloatValue = 633.5423;
 
-            var _context = new EdgeDataContext();
-            var servers = _context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
-
-            Guid test = servers[0].TagIds[0];
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            for (int i = 0; i < numberOfReadings; i++)
-            {
-                addReading(test, reading);
-            }
-            watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds);
-        }
-        public void addReading(Guid tagid, Reading reading)
-        {
-            var _context = new EdgeDataContext();
-            var t = _context.Tag.Find(tagid);
             if (t is null)
             {
                 return;
@@ -61,12 +65,12 @@ namespace POCService.Controllers
             reading.Tag = t;
             try
             {
-                _context.Reading.Update(reading);
+                _context.Reading.Add(reading);
                 _context.SaveChanges();
             }
             catch (DbUpdateException)
             {
-                addReading(tagid, reading);
+                addReading(tagid);
                 return;
             }
         }
@@ -78,6 +82,7 @@ namespace POCService.Controllers
             {
                 var s = new Server();
                 var result = _context.Server.Add(s);
+                _context.SaveChanges();
             }
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;

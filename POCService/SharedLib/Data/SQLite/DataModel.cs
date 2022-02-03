@@ -107,7 +107,7 @@ namespace SharedLib.Data.SQLite
         [Key]
         public Guid ServerId { get; set; } = new Guid();
         public string Name { get; set; }
-        public string Endpoint { get; set; }
+        public string Endpoint { get; set; }  
         public string Protocol { get; set; }
         public string TimeZone { get; set; }
         public uint PublishingInterval { get; set; } = 4000;
@@ -119,7 +119,7 @@ namespace SharedLib.Data.SQLite
         public bool Enabled { get; set; } = true;
         [Required]
         [ForeignKey("ServerCredentialsId")]
-        public ServerCredentials Credentials { get; set; }
+        public ServerCredentials Credentials { get; set; } = new ServerCredentials();
         public List<Tag> Tags { get; set; } = new List<Tag>();
     }
     public class ServerCredentials

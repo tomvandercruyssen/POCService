@@ -11,7 +11,6 @@ namespace POCService.Controllers
         public void addReadings(int number);
         public void removeReadings(int number);
         public void addServer();
-
         public void addTag(Guid id, TagDTO req);
 
         public ActionResult<List<ServerDTO>> GetAllServers { get; }

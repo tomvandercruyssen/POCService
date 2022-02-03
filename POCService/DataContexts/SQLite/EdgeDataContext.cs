@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Sqlite;
 using SharedLib.Data.SQLite;
 
 namespace POCService.DataContexts.SQLite

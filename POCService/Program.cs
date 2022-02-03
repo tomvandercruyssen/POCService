@@ -51,7 +51,7 @@ namespace POCService
                     switch (query)
                     {
                         case QueriesEnum.ADDREADINGS:
-                            _controller.addReadings(50000);
+                            _controller.addReadings(500);
                             break;
                         case QueriesEnum.REMOVEREADINGS:
                             _controller.removeReadings(5000);
