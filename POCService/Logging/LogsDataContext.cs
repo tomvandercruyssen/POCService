@@ -10,7 +10,6 @@ namespace POCService.Logging
 
         public LogsDataContext() : base()
         {
-
         }
         public LogsDataContext(DbContextOptions options) : base(options)
         {

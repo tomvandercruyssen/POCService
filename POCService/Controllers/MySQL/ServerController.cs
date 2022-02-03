@@ -7,12 +7,14 @@ using SharedLib.DTO.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using POCService.Logging;
 
 namespace POCService.Controllers.MySQL
 {
-
+    
     public class ServerController : ControllerBase
     {
+        Logger log = new Logger();
         public ActionResult<List<Server>> getServer()
         {
             var _context = new EdgeDataContext();
@@ -22,12 +24,16 @@ namespace POCService.Controllers.MySQL
 
         public void addServer()
         {
+            int amountRecords;
+            log.startTimer();
             using (var _context = new EdgeDataContext())
             {
                 var s = new Server();
                 var result = _context.Server.Add(s);
-                _context.SaveChanges();
+                amountRecords = _context.SaveChanges();
             }
+            int query = 3;
+            log.stopTimer(amountRecords, query);
         }
     }
 }

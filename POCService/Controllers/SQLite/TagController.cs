@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using POCService.DataContexts.SQLite;
+using POCService.Logging;
 using SharedLib.Data.SQLite;
 using SharedLib.DTOSQLite;
 using System;
@@ -13,6 +14,8 @@ namespace POCService.Controllers.SQLite
     {
 
         private ServerController _serverController = new ServerController();
+
+        Logger log = new Logger();
 
         public ActionResult<List<TagDTO>> GetAllTags()
         {
@@ -33,6 +36,8 @@ namespace POCService.Controllers.SQLite
         }
         public ActionResult<TagDTO> addTag()
         {
+            log.startTimer();
+            int amountRecords = 1;
             var _context = new EdgeDataContext();
             try
             {
@@ -55,8 +60,10 @@ namespace POCService.Controllers.SQLite
                 t.Server = s;
                 var result = _context.Tag.Update(t);
 
-                _context.SaveChanges();
+                amountRecords = _context.SaveChanges();
                 var entity = result.Entity;
+                query = 2;
+                log.stopTimer(amountRecords, query);
                 return Ok(new TagDTO(entity));
             }
             catch (Exception e)
@@ -65,9 +72,11 @@ namespace POCService.Controllers.SQLite
             }
         }
         Random rnd = new Random();
+        private int query;
+
         public void addReadings(int numberOfReadings)
         {
-            //query = "addReading n=" + numberOfReadings.ToString();
+            log.startTimer();
             var _context = new EdgeDataContext();
             var servers = _context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
             Guid id = servers[0].TagIds[0];
@@ -75,6 +84,8 @@ namespace POCService.Controllers.SQLite
             {
                 addReading(id);
             }
+            query = 0;
+            log.stopTimer(numberOfReadings, query);
         }
         public void addReading(Guid tagid)
         {
@@ -97,7 +108,7 @@ namespace POCService.Controllers.SQLite
             reading.Tag = t;
             try
             {
-                var result = _context.Reading.Add(reading);
+                _context.Reading.Add(reading);
                 _context.SaveChanges();
             }
             catch (DbUpdateException)
@@ -107,24 +118,18 @@ namespace POCService.Controllers.SQLite
             }
         }
 
-        public void removeReadings()
+        public void removeReadings(int number)
         {
-
+            log.startTimer();
             var _context = new EdgeDataContext();
-            foreach (var item in _context.Reading)
+            var readingList = _context.Reading.ToList();
+            for (int i = 0; i < number; i++)
             {
-                try
-                {
-                    if ((DateTime.UtcNow - item.Created).TotalSeconds > 3600)
-                    {
-                        _context.Reading.Remove(item);
-                    }
-                }
-                catch (Exception)
-                {
-                }
+                _context.Reading.Remove(readingList[i]);
             }
-            var result = _context.SaveChanges();
+            int amountRecords = _context.SaveChanges();
+            query = 1;
+            log.stopTimer(amountRecords, query);
         }
 
     }

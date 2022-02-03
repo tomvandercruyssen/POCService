@@ -45,7 +45,7 @@ namespace POCService
             {
                 try
                 {
-                    Console.WriteLine("choose: [0] Add Readings, [1] Remove Readings, [2] Add Tag, [3] Add Server; [4] Show Servers");
+                    Console.WriteLine("choose: [0] Add Readings, [1] Remove Readings, [2] Add Tag, [3] Add Server");
                     string queryQuery = Console.ReadLine();
                     QueriesEnum query = Enum.Parse<QueriesEnum>(queryQuery);
                     int number;                   
@@ -63,13 +63,10 @@ namespace POCService
                             _controller.removeReadings(number);
                             break;
                         case QueriesEnum.ADDTAG:
-                            //_controller.addTag();
+                            _controller.addTag();
                             break;
                         case QueriesEnum.ADDSERVER:
                             _controller.addServer();
-                            break;
-                        case QueriesEnum.GETSERVER:
-                            var servers = _controller.GetAllServers;
                             break;
                         default:
                             break;

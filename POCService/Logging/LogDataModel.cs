@@ -14,8 +14,9 @@ namespace POCService.Logging
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid LogId { get; set; } = new Guid();
-        public string Query { get; set; }
+        public int Query { get; set; }
         public int Time { get; set; }
         public string Database { get; set; }
+        public int AmountOfRecords { get; set; }
     }
 }

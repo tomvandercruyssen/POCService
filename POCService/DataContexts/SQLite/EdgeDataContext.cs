@@ -24,13 +24,15 @@ namespace POCService.DataContexts.SQLite
         public DbSet<GlobalConfig> GlobalConfig { get; set; }
         public DbSet<LogEntry> LogEntry { get; set; }
 
-        public static readonly ILoggerFactory loggerFactory = new LoggerFactory(
-            new[] { new ConsoleLoggerProvider((_, __) => true, true) }
-        );
+        //public static readonly ILoggerFactory loggerFactory = new LoggerFactory(
+        //    new[] { new ConsoleLoggerProvider((_, __) => true, true) }
+        //);
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseLoggerFactory(loggerFactory)  //tie-up DbContext with LoggerFactory object
-            .EnableSensitiveDataLogging()
+            //optionsBuilder.UseLoggerFactory(loggerFactory)  //tie-up DbContext with LoggerFactory object
+            //.EnableSensitiveDataLogging()
+            //    .UseSqlite(@"Data Source=C:\Users\tomcr\source\repos\POCService\POCService\edgedata.db; foreign keys=True;");
+            optionsBuilder
                 .UseSqlite(@"Data Source=C:\Users\tomcr\source\repos\POCService\POCService\edgedata.db; foreign keys=True;");
         }
 
