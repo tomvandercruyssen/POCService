@@ -16,6 +16,8 @@ namespace POCService.Controllers.SQLite
         private ServerController _serverController = new ServerController();
 
         Logger log = new Logger();
+        Random rnd = new Random();
+        private int query;
 
         public ActionResult<List<TagDTO>> GetAllTags()
         {
@@ -34,10 +36,11 @@ namespace POCService.Controllers.SQLite
                 return BadRequest(e.Message);
             }
         }
+
         public ActionResult<TagDTO> addTag()
         {
             log.startTimer();
-            int amountRecords = 1;
+            int amountRecords = 0;
             var _context = new EdgeDataContext();
             try
             {
@@ -71,8 +74,6 @@ namespace POCService.Controllers.SQLite
                 return BadRequest(e.Message);
             }
         }
-        Random rnd = new Random();
-        private int query;
 
         public void addReadings(int numberOfReadings)
         {
@@ -87,6 +88,7 @@ namespace POCService.Controllers.SQLite
             query = 0;
             log.stopTimer(numberOfReadings, query);
         }
+
         public void addReading(Guid tagid)
         {
             var _context = new EdgeDataContext();

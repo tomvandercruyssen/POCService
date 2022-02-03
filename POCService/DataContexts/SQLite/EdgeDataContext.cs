@@ -32,8 +32,7 @@ namespace POCService.DataContexts.SQLite
             //optionsBuilder.UseLoggerFactory(loggerFactory)  //tie-up DbContext with LoggerFactory object
             //.EnableSensitiveDataLogging()
             //    .UseSqlite(@"Data Source=C:\Users\tomcr\source\repos\POCService\POCService\edgedata.db; foreign keys=True;");
-            optionsBuilder
-                .UseSqlite(@"Data Source=C:\Users\tomcr\source\repos\POCService\POCService\edgedata.db; foreign keys=True;");
+            optionsBuilder.UseSqlite(@"Data Source=C:\Users\tomcr\source\repos\POCService\POCService\edgedata.db; foreign keys=True;");
         }
 
         public EdgeDataContext() : base()

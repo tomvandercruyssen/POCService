@@ -6,6 +6,6 @@ namespace POCService.Enums
 {
     public enum QueriesEnum
     {
-        ADDREADINGS, REMOVEREADINGS, ADDTAG, ADDSERVER, GETSERVER
+        ADDREADINGS, REMOVEREADINGS, ADDTAG, ADDSERVER, ESCAPE
     }
 }

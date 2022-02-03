@@ -16,8 +16,8 @@ namespace POCService.Logging
         {
             watch.Stop();
             LogQuery(watch.ElapsedMilliseconds, records, query);
-
         }
+
         public void LogQuery(long timeElapsed, int records, int query)
         {
             Log l = new Log();
