@@ -65,7 +65,7 @@ namespace POCService.Controllers.MySQL
                 amountRecords = _context.SaveChanges();
                 var entity = result.Entity;
                 query = 2;
-                log.stopTimer(amountRecords, query);
+                log.stopTimer(amountRecords, query, "MYSQL");
                 return Ok(new TagDTO(entity));
             }
             catch (Exception e)
@@ -85,7 +85,7 @@ namespace POCService.Controllers.MySQL
                 addReading(id);
             }
             query = 0;
-            log.stopTimer(numberOfReadings, query);
+            log.stopTimer(numberOfReadings, query, "MYSQL");
         }
 
         public void addReading(string tagid)
@@ -131,7 +131,7 @@ namespace POCService.Controllers.MySQL
             }
             int amountRecords = _context.SaveChanges();
             query = 1;
-            log.stopTimer(amountRecords, query);
+            log.stopTimer(amountRecords, query, "MYSQL");
         }
 
     }

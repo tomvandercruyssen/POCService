@@ -12,13 +12,13 @@ namespace POCService.Logging
             watch = System.Diagnostics.Stopwatch.StartNew();
         }
 
-        public void stopTimer(int records, int query)
+        public void stopTimer(int records, int query, string database)
         {
             watch.Stop();
-            LogQuery(watch.ElapsedMilliseconds, records, query);
+            LogQuery(watch.ElapsedMilliseconds, records, query, database);
         }
 
-        public void LogQuery(long timeElapsed, int records, int query)
+        public void LogQuery(long timeElapsed, int records, int query, string database)
         {
             Log l = new Log();
             l.Database = "MySQL";

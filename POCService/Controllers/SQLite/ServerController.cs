@@ -32,7 +32,7 @@ namespace POCService.Controllers.SQLite
                 amountRecords = _context.SaveChanges();
             }
             int query = 3;
-            log.stopTimer(amountRecords, query);
+            log.stopTimer(amountRecords, query, "SQLite");
         }
     }
 }
