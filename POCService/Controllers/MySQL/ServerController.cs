@@ -15,24 +15,18 @@ namespace POCService.Controllers.MySQL
     {
         public ActionResult<List<ServerDTO>> GetAllServers()
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
             var _context = new EdgeDataContext();
             var servers = _context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
             return servers;
         }
 
         public void addServer()
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
             using (var _context = new EdgeDataContext())
             {
                 var s = new Server();
                 var result = _context.Server.Add(s);
             }
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
         }
         public ActionResult<ServerDTO> UpdateServer(CreateServerResponse req)
         {

@@ -4,6 +4,7 @@ using POCService.Enums;
 
 namespace POCService
 {
+
     class Program
     {
         static void Main(string[] args)
@@ -47,14 +48,17 @@ namespace POCService
                     Console.WriteLine("choose: [0] Add Readings, [1] Remove Readings, [2] Add Tag, [3] Add Server; [4] Show Servers");
                     string queryQuery = Console.ReadLine();
                     QueriesEnum query = Enum.Parse<QueriesEnum>(queryQuery);
+                    int number;                   
 
                     switch (query)
                     {
                         case QueriesEnum.ADDREADINGS:
-                            _controller.addReadings(500);
+                            number = int.Parse(Console.ReadLine());
+                            _controller.addReadings(number);                            
                             break;
                         case QueriesEnum.REMOVEREADINGS:
-                            _controller.removeReadings(5000);
+                            number = int.Parse(Console.ReadLine());
+                            _controller.removeReadings(number);
                             break;
                         case QueriesEnum.ADDTAG:
                             //_controller.addTag();
@@ -75,11 +79,6 @@ namespace POCService
                     Console.WriteLine("Incorrect Input");
                 }
             }
-
         }
-
-        
-
-        
     }
 }

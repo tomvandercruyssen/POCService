@@ -7,6 +7,7 @@ using SharedLib.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using POCService.Logging;
 
 namespace POCService.Controllers
 {
@@ -14,6 +15,8 @@ namespace POCService.Controllers
     {
         private TagController _tagController = new TagController();
         private ServerController _serverController = new ServerController();
+
+        private string query;
 
         public ActionResult<List<ServerDTO>> GetAllServers { 
             get => throw new NotImplementedException(); 
@@ -27,19 +30,17 @@ namespace POCService.Controllers
 
         public void addReadings(int numberOfReadings)
         {
-
-
+            startTimer();
+            query = "addReading n=" + numberOfReadings.ToString();
             var _context = new EdgeDataContext();
             var servers = _context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
 
             string test = servers[0].TagIds[0];
-            var watch = System.Diagnostics.Stopwatch.StartNew();
             for (int i = 0; i < numberOfReadings; i++)
             {
                 addReading(test);
             }
-            watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds);
+            stopTimer();
         }
 
         public void addReading(string tagid)
@@ -75,39 +76,38 @@ namespace POCService.Controllers
 
         public void addServer()
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
+            startTimer();
+            query = "addServer";
             using (var _context = new EdgeDataContext())
             {
                 var s = new Server();
                 var result = _context.Server.Add(s);
                 _context.SaveChanges();
             }
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
+            stopTimer();
         }
 
         //number gebruiken
         public void removeReadings(int number)
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var ctx = new EdgeDataContext();
-            foreach (var item in ctx.Reading)
+            startTimer();
+            query = "removeReadings n=" + number.ToString();
+            var _context = new EdgeDataContext();
+            foreach (var item in _context.Reading)
             {
                 try
                 {
                     if ((DateTime.UtcNow - item.Created).TotalSeconds > 3600)
                     {
-                        ctx.Reading.Remove(item);
+                        _context.Reading.Remove(item);
                     }
                 }
                 catch (Exception)
                 {
                 }
             }
-
-            ctx.SaveChanges(); //ctx.SaveChanges().Compareto //oldCTX of oldCTX.count
-            watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds);
+            _context.SaveChanges();
+            stopTimer();
         }
 
         //tagcontroller?
@@ -142,6 +142,32 @@ namespace POCService.Controllers
         public void addTag(Guid id, SharedLib.DTOSQLite.TagDTO req)
         {
             throw new NotImplementedException();
+        }
+
+        System.Diagnostics.Stopwatch watch;
+        public void startTimer()
+        {
+            watch = System.Diagnostics.Stopwatch.StartNew();
+        }
+
+        public void stopTimer()
+        {
+            watch.Stop();
+            LogQuery(watch.ElapsedMilliseconds);
+
+        }
+        public void LogQuery(long timeElapsed)
+        {
+            Log l = new Log();
+            l.Database = "MySQL";
+            l.Query = query;
+            l.Time = (int)timeElapsed;
+
+            using (var _context = new LogsDataContext())
+            {
+                var result = _context.Logs.Add(l);
+                _context.SaveChanges();
+            }
         }
     }
 }
