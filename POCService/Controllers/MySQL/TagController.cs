@@ -7,6 +7,7 @@ using SharedLib.DTO;
 using SharedLib.Data;
 using POCService.DataContexts.MySQL;
 using POCService.Logging;
+using POCService.Enums;
 
 namespace POCService.Controllers.MySQL
 {
@@ -64,8 +65,7 @@ namespace POCService.Controllers.MySQL
 
                 amountRecords = _context.SaveChanges();
                 var entity = result.Entity;
-                query = 2;
-                log.stopTimer(amountRecords, query, "MYSQL");
+                log.stopTimer(amountRecords, QueriesEnum.ADDTAG, TechnologiesEnum.MySQL);
                 return Ok(new TagDTO(entity));
             }
             catch (Exception e)
@@ -84,8 +84,7 @@ namespace POCService.Controllers.MySQL
             {
                 addReading(id);
             }
-            query = 0;
-            log.stopTimer(numberOfReadings, query, "MYSQL");
+            log.stopTimer(numberOfReadings, QueriesEnum.ADDREADINGS, TechnologiesEnum.MySQL);
         }
 
         public void addReading(string tagid)
@@ -130,8 +129,7 @@ namespace POCService.Controllers.MySQL
                 _context.Reading.Remove(readingList[i]);
             }
             int amountRecords = _context.SaveChanges();
-            query = 1;
-            log.stopTimer(amountRecords, query, "MYSQL");
+            log.stopTimer(amountRecords, QueriesEnum.REMOVEREADINGS, TechnologiesEnum.MySQL);
         }
 
     }

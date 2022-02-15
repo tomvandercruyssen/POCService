@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using POCService.Logging;
+using POCService.Enums;
 
 namespace POCService.Controllers.MySQL
 {
@@ -31,9 +32,8 @@ namespace POCService.Controllers.MySQL
                 var s = new Server();
                 var result = _context.Server.Add(s);
                 amountRecords = _context.SaveChanges();
-            }
-            int query = 3;
-            log.stopTimer(amountRecords, query,"MYSQL");
+            }            
+            log.stopTimer(amountRecords, QueriesEnum.ADDSERVER, TechnologiesEnum.MySQL);
         }
     }
 }

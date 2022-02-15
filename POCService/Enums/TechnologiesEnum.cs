@@ -7,6 +7,8 @@ namespace POCService.Enums
     public enum TechnologiesEnum
     {
         MySQL,
-        SQLite
+        SQLite,
+        RANDOM,
+        ANALYSIS
     }
 }

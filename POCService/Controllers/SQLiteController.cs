@@ -35,6 +35,7 @@ namespace POCService.Controllers
         public void addTag()
         {
             _tagController.addTag();
-        }        
+        }
+
     }
 }

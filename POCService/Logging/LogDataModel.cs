@@ -16,7 +16,7 @@ namespace POCService.Logging
         public Guid LogId { get; set; } = new Guid();
         public int Query { get; set; }
         public int Time { get; set; }
-        public string Database { get; set; }
+        public int Database { get; set; }
         public int AmountOfRecords { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using POCService.DataContexts.SQLite;
+using POCService.Enums;
 using POCService.Logging;
 using SharedLib.Data.SQLite;
 using SharedLib.DTOSQLite;
@@ -31,8 +32,7 @@ namespace POCService.Controllers.SQLite
                 var result = _context.Server.Add(s);
                 amountRecords = _context.SaveChanges();
             }
-            int query = 3;
-            log.stopTimer(amountRecords, query, "SQLite");
+            log.stopTimer(amountRecords, QueriesEnum.ADDSERVER, TechnologiesEnum.SQLite);
         }
     }
 }
