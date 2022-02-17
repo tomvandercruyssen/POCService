@@ -113,10 +113,10 @@ namespace POCService
                         break;
                 }
 
-                string random2 = rnd.Next(1).ToString();
+                string random2 = rnd.Next(4).ToString();
 
                 QueriesEnum query = Enum.Parse<QueriesEnum>(random2);
-                int number = rnd.Next(2000, 100000);
+                int number = rnd.Next(2000, 50000);
                 try
                 {
                     switch (query)
@@ -168,6 +168,70 @@ namespace POCService
                     sqlite.Add(sq);
                 }
             }
+
+            int i0 = 0, i1 = 0, i2 = 0, i3 = 0;
+            float avgQuery0 = 0, avgQuery1 = 0, avgQuery2 = 0, avgQuery3 = 0;
+
+            foreach (var item in mysql)
+            {
+                switch (item.Query)
+                {
+                    case 0:
+                        i0++;
+                        avgQuery0 += item.avgSpeed;
+                        break;
+                    case 1:
+                        i1++;
+                        avgQuery1 += item.avgSpeed;
+                        break;
+                    case 2:
+                        i2++;
+                        avgQuery2 += item.avgSpeed;
+                        break;
+                    case 3:
+                        i3++;
+                        avgQuery3 += item.avgSpeed;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            Console.WriteLine("De gemiddelde snelheid van Query 0 in MysSQL is: " + (avgQuery0 / i0));
+            Console.WriteLine("De gemiddelde snelheid van Query 1 in MysSQL is: " + (avgQuery1 / i1));
+            Console.WriteLine("De gemiddelde snelheid van Query 2 in MysSQL is: " + (avgQuery2 / i2));
+            Console.WriteLine("De gemiddelde snelheid van Query 3 in MysSQL is: " + (avgQuery3 / i3));
+
+            i0 = 0; i1 = 0;i2 = 0; i3 = 0;
+            avgQuery0 = 0; avgQuery1 = 0; avgQuery2 = 0; avgQuery3 = 0;
+            foreach (var item in sqlite)
+            {
+                switch (item.Query)
+                {
+                    case 0:
+                        i0++;
+                        avgQuery0 += item.avgSpeed;
+                        break;
+                    case 1:
+                        i1++;
+                        avgQuery1 += item.avgSpeed;
+                        break;
+                    case 2:
+                        i2++;
+                        avgQuery2 += item.avgSpeed;
+                        break;
+                    case 3:
+                        i3++;
+                        avgQuery3 += item.avgSpeed;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            Console.WriteLine("------------------------------------------------------------------------------------------");
+            Console.WriteLine("De gemiddelde snelheid van Query 0 in SQLite is: " + (avgQuery0 / i0));
+            Console.WriteLine("De gemiddelde snelheid van Query 1 in SQLite is: " + (avgQuery1 / i1));
+            Console.WriteLine("De gemiddelde snelheid van Query 2 in SQLite is: " + (avgQuery2 / i2));
+            Console.WriteLine("De gemiddelde snelheid van Query 3 in SQLite is: " + (avgQuery3 / i3));
         }
     }
 }
