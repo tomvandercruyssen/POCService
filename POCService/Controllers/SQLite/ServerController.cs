@@ -22,7 +22,7 @@ namespace POCService.Controllers.SQLite
             return servers;
         }
 
-        public void addServer()
+        public void addServer(bool FirstTime)
         {
             int amountRecords;
             log.startTimer();
@@ -32,7 +32,7 @@ namespace POCService.Controllers.SQLite
                 var result = _context.Server.Add(s);
                 amountRecords = _context.SaveChanges();
             }
-            log.stopTimer(amountRecords, QueriesEnum.ADDSERVER, TechnologiesEnum.SQLite);
+            log.stopTimer(amountRecords, QueriesEnum.ADDSERVER, TechnologiesEnum.SQLite, FirstTime);
         }
     }
 }

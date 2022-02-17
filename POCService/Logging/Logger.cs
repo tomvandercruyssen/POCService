@@ -18,20 +18,21 @@ namespace POCService.Logging
             watch = System.Diagnostics.Stopwatch.StartNew();
         }
 
-        public void stopTimer(int records, QueriesEnum query, TechnologiesEnum database)
+        public void stopTimer(int records, QueriesEnum query, TechnologiesEnum database, bool FirstTime)
         {
             watch.Stop();
-            LogQuery(watch.ElapsedMilliseconds, records, query, database);
+            LogQuery(watch.ElapsedMilliseconds, records, query, database,FirstTime);
         }
 
 
-        public void LogQuery(long timeElapsed, int records, QueriesEnum query, TechnologiesEnum database)
+        public void LogQuery(long timeElapsed, int records, QueriesEnum query, TechnologiesEnum database, bool FirstTime)
         {
             Log l = new Log();
             l.Database = (int)database;
             l.Query = (int)query;
             l.Time = (int)timeElapsed;
             l.AmountOfRecords = records;
+            l.FirstTime = FirstTime;
             using (var _context = new LogsDataContext())
             {
                 var result = _context.Logs.Add(l);

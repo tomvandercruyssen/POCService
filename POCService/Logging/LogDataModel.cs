@@ -18,5 +18,6 @@ namespace POCService.Logging
         public int Time { get; set; }
         public int Database { get; set; }
         public int AmountOfRecords { get; set; }
+        public bool FirstTime { get; set; }
     }
 }

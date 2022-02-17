@@ -38,7 +38,7 @@ namespace POCService.Controllers.SQLite
             }
         }
 
-        public ActionResult<TagDTO> addTag()
+        public ActionResult<TagDTO> addTag(bool FirstTime)
         {
             log.startTimer();
             int amountRecords = 0;
@@ -66,7 +66,7 @@ namespace POCService.Controllers.SQLite
 
                 amountRecords = _context.SaveChanges();
                 var entity = result.Entity;
-                log.stopTimer(amountRecords, QueriesEnum.ADDTAG, TechnologiesEnum.SQLite);
+                log.stopTimer(amountRecords, QueriesEnum.ADDTAG, TechnologiesEnum.SQLite, FirstTime);
                 return Ok(new TagDTO(entity));
             }
             catch (Exception e)
@@ -75,7 +75,7 @@ namespace POCService.Controllers.SQLite
             }
         }
 
-        public void addReadings(int numberOfReadings)
+        public void addReadings(int numberOfReadings, bool FirstTime)
         {
             log.startTimer();
             var _context = new EdgeDataContext();
@@ -83,12 +83,12 @@ namespace POCService.Controllers.SQLite
             Guid id = servers[0].TagIds[0];
             for (int i = 0; i < numberOfReadings; i++)
             {
-                addReading(id);
+                addReading(id, FirstTime);
             }
-            log.stopTimer(numberOfReadings, QueriesEnum.ADDREADINGS, TechnologiesEnum.SQLite);
+            log.stopTimer(numberOfReadings, QueriesEnum.ADDREADINGS, TechnologiesEnum.SQLite, FirstTime);
         }
 
-        public void addReading(Guid tagid)
+        public void addReading(Guid tagid, bool FirstTime)
         {
             var _context = new EdgeDataContext();
             var t = _context.Tag.Find(tagid);
@@ -114,12 +114,12 @@ namespace POCService.Controllers.SQLite
             }
             catch (DbUpdateException)
             {
-                addReading(tagid);
+                addReading(tagid, FirstTime);
                 return;
             }
         }
 
-        public void removeReadings(int number)
+        public void removeReadings(int number, bool FirstTime)
         {
             log.startTimer();
             var _context = new EdgeDataContext();
@@ -129,7 +129,7 @@ namespace POCService.Controllers.SQLite
                 _context.Reading.Remove(readingList[i]);
             }
             int amountRecords = _context.SaveChanges();
-            log.stopTimer(amountRecords, QueriesEnum.REMOVEREADINGS, TechnologiesEnum.SQLite);
+            log.stopTimer(amountRecords, QueriesEnum.REMOVEREADINGS, TechnologiesEnum.SQLite, FirstTime);
         }
 
     }

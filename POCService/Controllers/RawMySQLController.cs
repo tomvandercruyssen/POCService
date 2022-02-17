@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using POCService.Controllers.MySQL;
 using POCService.DataContexts.MySQL;
 using SharedLib.Data;
@@ -14,7 +13,7 @@ using System.Data.Common;
 
 namespace POCService.Controllers
 {
-    public class MySQLController : BaseController
+    public class RawMySQLController : BaseController
     {
         private TagController _tagController = new TagController();
         private ServerController _serverController = new ServerController();
@@ -22,7 +21,7 @@ namespace POCService.Controllers
         public void addReadings(int numberOfReadings, bool FirstTime)
         {
             _tagController.addReadings(numberOfReadings, FirstTime);
-        }        
+        }
 
         public void addServer(bool FirstTime)
         {

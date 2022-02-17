@@ -13,7 +13,7 @@ namespace POCService
         {
             BaseController _controller = new SQLiteController();
             bool _continue = true;
-
+            bool FirstTime = true;
         Found:
             while (_continue)
             {
@@ -64,18 +64,18 @@ namespace POCService
                         case QueriesEnum.ADDREADINGS:
                             Console.WriteLine("Hoeveel readings?");
                             number = int.Parse(Console.ReadLine());
-                            _controller.addReadings(number);
+                            _controller.addReadings(number, FirstTime);
                             break;
                         case QueriesEnum.REMOVEREADINGS:
                             Console.WriteLine("Hoeveel readings?");
                             number = int.Parse(Console.ReadLine());
-                            _controller.removeReadings(number);
+                            _controller.removeReadings(number, FirstTime);
                             break;
                         case QueriesEnum.ADDTAG:
-                            _controller.addTag();
+                            _controller.addTag(FirstTime);
                             break;
                         case QueriesEnum.ADDSERVER:
-                            _controller.addServer();
+                            _controller.addServer(FirstTime);
                             break;
                         case QueriesEnum.ESCAPE:
                             goto Found;
@@ -83,17 +83,18 @@ namespace POCService
                         default:
                             break;
                     }
+                    FirstTime = false;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
-                    Console.WriteLine("Incorrect Input");
                 }
             }
         }
 
         static void randomQuery()
         {
+            bool FirstTime = true;
             for (int i = 0; i < 100; i++)
             {
                 BaseController _controller = new SQLiteController();
@@ -121,27 +122,29 @@ namespace POCService
                     switch (query)
                     {
                         case QueriesEnum.ADDREADINGS:
-                            _controller.addReadings(number);
+                            _controller.addReadings(number, FirstTime);
                             break;
                         case QueriesEnum.REMOVEREADINGS:
-                            _controller.removeReadings(number);
+                            _controller.removeReadings(number, FirstTime);
                             break;
                         case QueriesEnum.ADDTAG:
-                            _controller.addTag();
+                            _controller.addTag(FirstTime);
                             break;
                         case QueriesEnum.ADDSERVER:
-                            _controller.addServer();
+                            _controller.addServer(FirstTime);
                             break;
                         default:
                             break;
                     }
                 }
+                
                 catch (Exception e)
                 {
-                    _controller.addReadings(100000);
+                    _controller.addReadings(100000, FirstTime);
                     Console.WriteLine(e);
                 }
             }
+            FirstTime = false;
         }
 
         static void getLogs()

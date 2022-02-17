@@ -37,7 +37,7 @@ namespace POCService.Controllers.MySQL
             }
         }
 
-        public ActionResult<TagDTO> addTag()
+        public ActionResult<TagDTO> addTag(bool FirstTime)
         {
             log.startTimer();
             int amountRecords = 1;
@@ -65,7 +65,7 @@ namespace POCService.Controllers.MySQL
 
                 amountRecords = _context.SaveChanges();
                 var entity = result.Entity;
-                log.stopTimer(amountRecords, QueriesEnum.ADDTAG, TechnologiesEnum.MySQL);
+                log.stopTimer(amountRecords, QueriesEnum.ADDTAG, TechnologiesEnum.MySQL, FirstTime);
                 return Ok(new TagDTO(entity));
             }
             catch (Exception e)
@@ -74,7 +74,7 @@ namespace POCService.Controllers.MySQL
             }
         }
 
-        public void addReadings(int numberOfReadings)
+        public void addReadings(int numberOfReadings, bool FirstTime)
         {
             log.startTimer();
             var _context = new EdgeDataContext();
@@ -84,7 +84,7 @@ namespace POCService.Controllers.MySQL
             {
                 addReading(id);
             }
-            log.stopTimer(numberOfReadings, QueriesEnum.ADDREADINGS, TechnologiesEnum.MySQL);
+            log.stopTimer(numberOfReadings, QueriesEnum.ADDREADINGS, TechnologiesEnum.MySQL, FirstTime);
         }
 
         public void addReading(string tagid)
@@ -119,7 +119,7 @@ namespace POCService.Controllers.MySQL
             }
         }
 
-        public void removeReadings(int number)
+        public void removeReadings(int number, bool FirstTime)
         {
             log.startTimer();
             var _context = new EdgeDataContext();
@@ -129,7 +129,7 @@ namespace POCService.Controllers.MySQL
                 _context.Reading.Remove(readingList[i]);
             }
             int amountRecords = _context.SaveChanges();
-            log.stopTimer(amountRecords, QueriesEnum.REMOVEREADINGS, TechnologiesEnum.MySQL);
+            log.stopTimer(amountRecords, QueriesEnum.REMOVEREADINGS, TechnologiesEnum.MySQL, FirstTime);
         }
 
     }

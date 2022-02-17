@@ -23,7 +23,7 @@ namespace POCService.Controllers.MySQL
             return servers;
         }
 
-        public void addServer()
+        public void addServer(bool FirstTime)
         {
             int amountRecords;
             log.startTimer();
@@ -33,7 +33,7 @@ namespace POCService.Controllers.MySQL
                 var result = _context.Server.Add(s);
                 amountRecords = _context.SaveChanges();
             }            
-            log.stopTimer(amountRecords, QueriesEnum.ADDSERVER, TechnologiesEnum.MySQL);
+            log.stopTimer(amountRecords, QueriesEnum.ADDSERVER, TechnologiesEnum.MySQL, FirstTime);
         }
     }
 }

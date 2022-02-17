@@ -8,9 +8,9 @@ namespace POCService.Controllers
 {
     public interface BaseController
     {
-        public void addReadings(int number);
-        public void removeReadings(int number);
-        public void addServer();
-        public void addTag();
+        public void addReadings(int number, bool FirstTime);
+        public void removeReadings(int number, bool FirstTime);
+        public void addServer(bool FirstTime);
+        public void addTag(bool FirstTime);
     }
 }
