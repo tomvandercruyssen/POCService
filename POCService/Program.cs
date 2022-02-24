@@ -19,7 +19,7 @@ namespace POCService
             {
                 try
                 {
-                    Console.WriteLine("Maak een keuze: [0] MySQL, [1] SQLite, [2] voor random data queries, [3] for analysis");
+                    Console.WriteLine("Maak een keuze: [0] MySQL, [1] SQLite, [2] RawMysql, [3] voor random data queries, [4] for analysis");
                     string techQuery = Console.ReadLine();
                     TechnologiesEnum tech = Enum.Parse<TechnologiesEnum>(techQuery);
                     switch (tech)
@@ -30,6 +30,10 @@ namespace POCService
                             break;
                         case TechnologiesEnum.SQLite:
                             _controller = new SQLiteController();
+                            _continue = false;
+                            break;
+                        case TechnologiesEnum.RAWMYSQL:
+                            _controller = new RawMySQLController();
                             _continue = false;
                             break;
                         case TechnologiesEnum.RANDOM:

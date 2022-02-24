@@ -108,11 +108,11 @@ namespace SharedLib.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string ServerId { get; set; }
-        public string Name { get; set; } = "MysqlServer";
-        public string Endpoint { get; set; }
-        public string Protocol { get; set; }
-        public string TimeZone { get; set; }
+        public string ServerId { get; set; } = new Guid().ToString();
+        public string Name { get; set; } = "rawsql";
+        public string Endpoint { get; set; } = "endpoint1";
+        public string Protocol { get; set; } = "2";
+        public string TimeZone { get; set; } = "timezone1";
         public uint PublishingInterval { get; set; } = 4000;
         public uint MaxNotifications { get; set; } = 0;
         public uint SessionTimeOut { get; set; } = 40000;
@@ -129,7 +129,7 @@ namespace SharedLib.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string ServerCredentialsId { get; set; }// = new Guid();
+        public string ServerCredentialsId { get; set; } = new Guid().ToString();
         public string Username { get; set; }
         public string Password { get; set; }
     }
@@ -137,7 +137,7 @@ namespace SharedLib.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string TagId { get; set; }// = new Guid();
+        public string TagId { get; set; } = new Guid().ToString();
         public string Name { get; set; }
         public string NodeId { get; set; }
         public string Type { get; set; }
@@ -165,7 +165,7 @@ namespace SharedLib.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string DestinationId { get; set; } //= new Guid();
+        public string DestinationId { get; set; } = new Guid().ToString();
         public string Name { get; set; }
         public string Endpoint { get; set; }
         public string Username { get; set; }
@@ -177,7 +177,7 @@ namespace SharedLib.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string WebServiceGroupId { get; set; }// = new Guid();
+        public string WebServiceGroupId { get; set; } = new Guid().ToString();
         public string Name { get; set; }
         public List<WebService> WebServices { get; set; } = new List<WebService>();
     }
@@ -186,7 +186,7 @@ namespace SharedLib.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string WebServiceId { get; set; } //= new Guid();
+        public string WebServiceId { get; set; } = new Guid().ToString();
         public string Name { get; set; }
         public uint Delay { get; set; }
         public bool Bundle { get; set; }
@@ -209,7 +209,7 @@ namespace SharedLib.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string WebServiceElementId { get; set; } //= new Guid();
+        public string WebServiceElementId { get; set; } = new Guid().ToString();
         public string Name { get; set; }
         [Required]
         [ForeignKey("TagId")]
@@ -225,7 +225,7 @@ namespace SharedLib.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string WebServiceElementValueId { get; set; } //= new Guid();
+        public string WebServiceElementValueId { get; set; } = new Guid().ToString();
         public DateTime Created { get; set; }
         public string Value { get; set; }
         [Required]
@@ -239,7 +239,7 @@ namespace SharedLib.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string WebServiceCallId { get; set; }// = new Guid();
+        public string WebServiceCallId { get; set; } = new Guid().ToString();
         public DateTime Created { get; set; }
         public string RawInput { get; set; }
         public string Result { get; set; } = "not final";
@@ -253,7 +253,7 @@ namespace SharedLib.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string WebServiceCallExecutionId { get; set; } //= new Guid();
+        public string WebServiceCallExecutionId { get; set; } = new Guid().ToString();
         public string RawOutput { get; set; }
         public string Status { get; set; }
         public TimeSpan ExecutionTime { get; set; }
