@@ -1,134 +1,99 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using SharedLib.DTO;
-//using SharedLib.Data;
-////using POCService.DataContexts.MySQL;
-//using POCService.Logging;
-//using POCService.Enums;
+﻿using MySqlConnector;
+using POCService.Enums;
+//using POCService.DataContexts.MySQL;
+using POCService.Logging;
+using SharedLib.Data;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Text;
 
-//namespace POCService.Controllers.RawMySQL
-//{
-//    public class TagController : ControllerBase
-//    {
-//        private ServerController _serverController = new ServerController();
+namespace POCService.Controllers.RawMySQL
+{
+    public class TagController
+    {
+        private ServerController _serverController = new ServerController();
+        private string conn = "server = localhost; port = 3306; user = root; password = Azerty123; database = poc";
 
-//        Logger log = new Logger();
-//        Random rnd = new Random();
-//        private int query;
+        Logger log = new Logger();
+        Random rnd = new Random();
 
-//        public ActionResult<List<TagDTO>> GetAllTags()
-//        {
-//            var watch = System.Diagnostics.Stopwatch.StartNew();
-//            var _context = new EdgeDataContext();
-//            try
-//            {
-//                watch.Stop();
-//                var elapsedMs = watch.ElapsedMilliseconds;
-//                return Ok(_context.Tag.Include(t => t.Server).Select(t => new TagDTO(t)).ToList());
-//            }
-//            catch (Exception e)
-//            {
-//                watch.Stop();
-//                var elapsedMs = watch.ElapsedMilliseconds;
-//                return BadRequest(e.Message);
-//            }
-//        }
+        public void addTag(bool firsttime)
+        {
+            log.startTimer();
+            Tag t = new Tag();
+            int amountRecords = 1;
+            try
+            {
+                var s = _serverController.GetServers();
+                string cmdStr = @"INSERT INTO tag (TagId, Name, NodeId, Type, BufferHours, SamplingInterval, QueueSize, DiscardOldest, ServerId)
+                                VALUES (@TagId, @Name, @NodeId, @Type, @BufferHours, @SamplingInterval, @QueueSize, @DiscardOldest, @ServerId);";
+                Console.WriteLine(cmdStr);
+                using (MySqlConnection mConnection = new MySqlConnection(conn))
+                {
+                    mConnection.Open();
+                    using (MySqlCommand myCmd = new MySqlCommand(cmdStr, mConnection))
+                    {
+                        myCmd.CommandType = CommandType.Text;
+                        myCmd.Parameters.AddWithValue("@TagId", Guid.NewGuid());
+                        myCmd.Parameters.AddWithValue("@Name", t.Name);
+                        myCmd.Parameters.AddWithValue("@NodeId", Guid.NewGuid());
+                        myCmd.Parameters.AddWithValue("@Type", t.Type);
+                        myCmd.Parameters.AddWithValue("@BufferHours", t.BufferHours);
+                        myCmd.Parameters.AddWithValue("@SamplingInterval", t.SamplingInterval);
+                        myCmd.Parameters.AddWithValue("@QueueSize", t.QueueSize);
+                        myCmd.Parameters.AddWithValue("@DiscardOldest", t.DiscardOldest);
+                        myCmd.Parameters.AddWithValue("@ServerId", s[0]);
+                        myCmd.ExecuteNonQuery();
+                    }
+                    log.stopTimer(amountRecords, QueriesEnum.ADDTAG, TechnologiesEnum.RAWMYSQL, firsttime);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
 
-//        public ActionResult<TagDTO> addTag()
-//        {
-//            log.startTimer();
-//            int amountRecords = 1;
-//            var _context = new EdgeDataContext();
-//            try
-//            {
-//                var s = _serverController.getServer().Value[0];
-//                if (s is null)
-//                {
-//                    return BadRequest("No server was found with the given id");
-//                }
-//                var tag = new TagDTO()
-//                {
-//                    Name = "tag1",
-//                    NodeId = "ns=2;s=len009",
-//                    Type = "uint",
-//                    BufferHours = (uint)1,
-//                    SamplingInterval = (uint)1000,
-//                    QueueSize = (uint)1000,
-//                    DiscardOldest = true
-//                };
-//                var t = tag.FromDTO();
-//                t.Server = s;
-//                var result = _context.Tag.Update(t);
+        public void addReadings(int numberOfReadings, bool firstime)
+        {
+            log.startTimer();
+            StringBuilder sCommand = new StringBuilder("INSERT INTO reading (ReadingId, Created, Quality, StringValue, TagId, IntegerValue, UnsignedIntegerValue, FloatValue) VALUES");
+            using (MySqlConnection mConnection = new MySqlConnection(conn))
+            {
+                List<string> Rows = new List<string>();
+                for (int i = 0; i < numberOfReadings; i++)
+                {
+                    Rows.Add(string.Format("('{0}','{1}' ,'{2}','{3}','{4}','{5}','{6}','{7}')", MySqlHelper.EscapeString(Guid.NewGuid().ToString()), MySqlHelper.EscapeString(DateTime.Now.ToString()),
+                        MySqlHelper.EscapeString("good"), MySqlHelper.EscapeString("stringvalue"), MySqlHelper.EscapeString("07347218-0093-4d41-9d0b-2ce8ba04354b"), MySqlHelper.EscapeString("123789"),
+                        MySqlHelper.EscapeString("5233"), MySqlHelper.EscapeString("415.23")));
+                }
+                sCommand.Append(string.Join(",", Rows));
+                sCommand.Append(";");
+                mConnection.Open();
+                using (MySqlCommand myCmd = new MySqlCommand(sCommand.ToString(), mConnection))
+                {
+                    myCmd.CommandType = CommandType.Text;
+                    myCmd.ExecuteNonQuery();
+                }
+            }
+            log.stopTimer(numberOfReadings, QueriesEnum.ADDREADINGS, TechnologiesEnum.RAWMYSQL, firstime);
+        }
 
-//                amountRecords = _context.SaveChanges();
-//                var entity = result.Entity;
-//                log.stopTimer(amountRecords, QueriesEnum.ADDTAG, TechnologiesEnum.MySQL);
-//                return Ok(new TagDTO(entity));
-//            }
-//            catch (Exception e)
-//            {
-//                return BadRequest(e.Message);
-//            }
-//        }
-
-//        public void addReadings(int numberOfReadings)
-//        {
-//            log.startTimer();
-//            var _context = new EdgeDataContext();
-//            var servers = _context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
-//            string id = servers[0].TagIds[0];
-//            for (int i = 0; i < numberOfReadings; i++)
-//            {
-//                addReading(id);
-//            }
-//            log.stopTimer(numberOfReadings, QueriesEnum.ADDREADINGS, TechnologiesEnum.MySQL);
-//        }
-
-//        public void addReading(string tagid)
-//        {
-//            var _context = new EdgeDataContext();
-//            var t = _context.Tag.Find(tagid);
-
-//            Random rnd = new Random();
-//            Reading reading = new Reading();
-//            reading.Created = DateTime.UtcNow;
-//            reading.Quality = "TEST";
-//            reading.StringValue = "stringvalue";
-//            reading.IntegerValue = rnd.Next(0, 100000000);
-//            reading.UnsignedIntegerValue = 6874833;
-//            reading.FloatValue = 633.5423;
-//            int amountRecords = 0;
-
-//            if (t is null)
-//            {
-//                return;
-//            }
-//            reading.Tag = t;
-//            try
-//            {
-//                _context.Reading.Add(reading);
-//                _context.SaveChanges();
-//            }
-//            catch (DbUpdateException)
-//            {
-//                addReading(tagid);
-//                return;
-//            }
-//        }
-
-//        public void removeReadings(int number)
-//        {
-//            log.startTimer();
-//            var _context = new EdgeDataContext();
-//            var readingList = _context.Reading.ToList();
-//            for (int i = 0; i < number; i++)
-//            {
-//                _context.Reading.Remove(readingList[i]);
-//            }
-//            int amountRecords = _context.SaveChanges();
-//            log.stopTimer(amountRecords, QueriesEnum.REMOVEREADINGS, TechnologiesEnum.MySQL);
-//        }
-
-//    }
-//}
+        public void removeReadings(int number, bool FirstTime)
+        {
+            log.startTimer();
+            string cmdStr = @"DELETE FROM reading limit " + number;
+            Console.WriteLine(cmdStr);
+            using (MySqlConnection mConnection = new MySqlConnection(conn))
+            {
+                mConnection.Open();
+                using (MySqlCommand myCmd = new MySqlCommand(cmdStr, mConnection))
+                {
+                    myCmd.ExecuteNonQuery();
+                }
+                log.stopTimer(number, QueriesEnum.REMOVEREADINGS, TechnologiesEnum.RAWMYSQL, FirstTime);
+            }
+        }
+    }
+}

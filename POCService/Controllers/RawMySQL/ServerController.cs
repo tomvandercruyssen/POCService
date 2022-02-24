@@ -20,7 +20,23 @@ namespace POCService.Controllers.RawMySQL
         Logger log = new Logger();
 
         private string conn = "server = localhost; port = 3306; user = root; password = Azerty123; database = poc";
-
+        public List<string> GetServers()
+        {
+            List<string> servers = new List<string>();
+            using (MySqlConnection mConnection = new MySqlConnection(conn))
+            {
+                mConnection.Open();
+                using (MySqlCommand cmd = new MySqlCommand("Select * from server", mConnection))
+                {
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        servers.Add(reader.GetString("ServerId"));
+                    }
+                }
+            }
+                return servers;
+        }
         public void addServer(bool FirstTime)
         {
             int amountRecords = 0;
@@ -32,7 +48,6 @@ namespace POCService.Controllers.RawMySQL
                             VALUES (@ServerId, @Enabled, @Endpoint, @LifetimeCount, @MaxKeepAlive, @MaxNotifications, @Name, @Protocol, @PublishingInterval, @ReconnectOnSubscriptionDelete,
                             @SessionTimeOut, @TimeZone, @Credentials);";
             Console.WriteLine(cmdStr);
-            Console.WriteLine(s.LifetimeCount);
             using (MySqlConnection mConnection = new MySqlConnection(conn))
             {
                 mConnection.Open();
@@ -43,7 +58,7 @@ namespace POCService.Controllers.RawMySQL
                 using (MySqlCommand myCmd = new MySqlCommand(cmdStr, mConnection))
                 {
                     myCmd.CommandType = CommandType.Text;
-                    myCmd.Parameters.AddWithValue("@ServerId", s.ServerId);
+                    myCmd.Parameters.AddWithValue("@ServerId", Guid.NewGuid());
                     myCmd.Parameters.AddWithValue("@Enabled", (int) Convert.ToInt32(s.Enabled));
                     myCmd.Parameters.AddWithValue("@Endpoint", s.Endpoint);
                     myCmd.Parameters.AddWithValue("@LifetimeCount", (int) s.LifetimeCount);
@@ -55,11 +70,11 @@ namespace POCService.Controllers.RawMySQL
                     myCmd.Parameters.AddWithValue("@ReconnectOnSubscriptionDelete", s.ReconnectOnSubscriptionDelete);
                     myCmd.Parameters.AddWithValue("@SessionTimeOut", s.SessionTimeOut);
                     myCmd.Parameters.AddWithValue("@TimeZone", s.TimeZone);
-                    myCmd.Parameters.AddWithValue("@Credentials", s.Credentials.ServerCredentialsId);
+                    myCmd.Parameters.AddWithValue("@Credentials", Guid.NewGuid());
                     myCmd.ExecuteNonQuery();
                 }
             }
-            log.stopTimer(amountRecords, QueriesEnum.ADDSERVER, TechnologiesEnum.MySQL, FirstTime);
+            log.stopTimer(amountRecords, QueriesEnum.ADDSERVER, TechnologiesEnum.RAWMYSQL, FirstTime);
         }
     }
 }

@@ -108,7 +108,7 @@ namespace SharedLib.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string ServerId { get; set; } = new Guid().ToString();
+        public string ServerId { get; set; }
         public string Name { get; set; } = "rawsql";
         public string Endpoint { get; set; } = "endpoint1";
         public string Protocol { get; set; } = "2";
@@ -129,7 +129,7 @@ namespace SharedLib.Data
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string ServerCredentialsId { get; set; } = new Guid().ToString();
+        public string ServerCredentialsId { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
     }
@@ -147,7 +147,7 @@ namespace SharedLib.Data
         public bool DiscardOldest { get; set; }
         [Required]
         [ForeignKey("ServerId")]
-        public Server Server { get; set; }
+        public string ServerId { get; set; }
         public List<WebServiceElement> WebServiceElements { get; set; } = new List<WebServiceElement>();
         public List<Reading> Readings { get; set; } = new List<Reading>();
     }

@@ -13,12 +13,12 @@ namespace POCService.Controllers
 {
     public class RawMySQLController : BaseController
     {
-       // private TagController _tagController = new TagController();
+        private TagController _tagController = new TagController();
         private ServerController _serverController = new ServerController();
 
         public void addReadings(int numberOfReadings, bool FirstTime)
         {
-            //_tagController.addReadings(numberOfReadings, FirstTime);
+            _tagController.addReadings(numberOfReadings, FirstTime);
         }
 
         public void addServer(bool FirstTime)
@@ -27,12 +27,12 @@ namespace POCService.Controllers
         }
         public void removeReadings(int number, bool FirstTime)
         {
-            //_tagController.removeReadings(number, FirstTime);
+            _tagController.removeReadings(number, FirstTime);
         }
 
         public void addTag(bool FirstTime)
         {
-            //_tagController.addTag(FirstTime);
+            _tagController.addTag(FirstTime);
         }
     }
 

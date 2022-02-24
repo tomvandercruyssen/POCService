@@ -43,7 +43,7 @@ namespace SharedLib.DTO
             SamplingInterval = t.SamplingInterval;
             QueueSize = t.QueueSize;
             DiscardOldest = t.DiscardOldest;
-            ServerId = t.Server.ServerId.ToString();
+            ServerId = t.ServerId.ToString();
         }
 
         public Tag FromDTO()

@@ -27,7 +27,7 @@ namespace POCService.Controllers.MySQL
             {
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
-                return Ok(_context.Tag.Include(t => t.Server).Select(t => new TagDTO(t)).ToList());
+                return Ok(_context.Tag.Include(t => t.ServerId).Select(t => new TagDTO(t)).ToList());
             }
             catch (Exception e)
             {
@@ -60,7 +60,7 @@ namespace POCService.Controllers.MySQL
                     DiscardOldest = true
                 };
                 var t = tag.FromDTO();
-                t.Server = s;
+                t.ServerId = s.ServerId;
                 var result = _context.Tag.Update(t);
 
                 amountRecords = _context.SaveChanges();
