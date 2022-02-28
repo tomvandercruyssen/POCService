@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace POCService.Controllers.RawMySQL
+namespace POCService.Controllers.Dapper
 {
 
     public class ServerController

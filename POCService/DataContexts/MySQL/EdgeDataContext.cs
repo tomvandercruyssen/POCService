@@ -23,8 +23,7 @@ namespace POCService.DataContexts.MySQL
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=Azerty123;database=poc");
-                
+                optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=Azerty123;database=poc");                
             }
         }
 

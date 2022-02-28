@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 
-namespace POCService.Controllers.RawMySQL
+namespace POCService.Controllers.Dapper
 {
     public class TagController
     {

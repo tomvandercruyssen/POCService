@@ -14,11 +14,8 @@ namespace POCService.Controllers.SQLite
     public class TagController : ControllerBase
     {
 
-        private ServerController _serverController = new ServerController();
-
-        Logger log = new Logger();
-        Random rnd = new Random();
-        private int query;
+        private readonly ServerController _serverController = new ServerController();
+        readonly Logger log = new Logger();
 
         public ActionResult<List<TagDTO>> GetAllTags()
         {
@@ -38,10 +35,9 @@ namespace POCService.Controllers.SQLite
             }
         }
 
-        public ActionResult<TagDTO> addTag(bool FirstTime)
+        public ActionResult<TagDTO> AddTag(bool FirstTime)
         {
             log.startTimer();
-            int amountRecords = 0;
             var _context = new EdgeDataContext();
             try
             {
@@ -64,7 +60,7 @@ namespace POCService.Controllers.SQLite
                 t.Server = s;
                 var result = _context.Tag.Update(t);
 
-                amountRecords = _context.SaveChanges();
+                int amountRecords = _context.SaveChanges();
                 var entity = result.Entity;
                 log.stopTimer(amountRecords, QueriesEnum.ADDTAG, TechnologiesEnum.SQLite, FirstTime);
                 return Ok(new TagDTO(entity));
@@ -75,7 +71,7 @@ namespace POCService.Controllers.SQLite
             }
         }
 
-        public void addReadings(int numberOfReadings, bool FirstTime)
+        public void AddReadings(int numberOfReadings, bool FirstTime)
         {
             log.startTimer();
             var _context = new EdgeDataContext();
@@ -83,24 +79,26 @@ namespace POCService.Controllers.SQLite
             Guid id = servers[0].TagIds[0];
             for (int i = 0; i < numberOfReadings; i++)
             {
-                addReading(id, FirstTime);
+                AddReading(id, FirstTime);
             }
             log.stopTimer(numberOfReadings, QueriesEnum.ADDREADINGS, TechnologiesEnum.SQLite, FirstTime);
         }
 
-        public void addReading(Guid tagid, bool FirstTime)
+        public void AddReading(Guid tagid, bool FirstTime)
         {
             var _context = new EdgeDataContext();
             var t = _context.Tag.Find(tagid);
 
             Random rnd = new Random();
-            Reading reading = new Reading();
-            reading.Created = DateTime.UtcNow;
-            reading.Quality = "TEST";
-            reading.StringValue = "stringvalue";
-            reading.IntegerValue = rnd.Next(0, 100000000);
-            reading.UnsignedIntegerValue = 6874833;
-            reading.FloatValue = 633.5423;
+            Reading reading = new Reading
+            {
+                Created = DateTime.UtcNow,
+                Quality = "TEST",
+                StringValue = "stringvalue",
+                IntegerValue = rnd.Next(0, 100000000),
+                UnsignedIntegerValue = 6874833,
+                FloatValue = 633.5423
+            };
 
             if (t is null)
             {
@@ -114,12 +112,12 @@ namespace POCService.Controllers.SQLite
             }
             catch (DbUpdateException)
             {
-                addReading(tagid, FirstTime);
+                AddReading(tagid, FirstTime);
                 return;
             }
         }
 
-        public void removeReadings(int number, bool FirstTime)
+        public void RemoveReadings(int number, bool FirstTime)
         {
             log.startTimer();
             var _context = new EdgeDataContext();

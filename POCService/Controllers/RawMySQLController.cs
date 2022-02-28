@@ -18,21 +18,21 @@ namespace POCService.Controllers
 
         public void addReadings(int numberOfReadings, bool FirstTime)
         {
-            _tagController.addReadings(numberOfReadings, FirstTime);
+            _tagController.AddReadings(numberOfReadings, FirstTime);
         }
 
         public void addServer(bool FirstTime)
         {
-            _serverController.addServer(FirstTime);
+            _serverController.AddServer(FirstTime);
         }
         public void removeReadings(int number, bool FirstTime)
         {
-            _tagController.removeReadings(number, FirstTime);
+            _tagController.RemoveReadings(number, FirstTime);
         }
 
         public void addTag(bool FirstTime)
         {
-            _tagController.addTag(FirstTime);
+            _tagController.AddTag(FirstTime);
         }
     }
 
