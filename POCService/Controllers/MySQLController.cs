@@ -2,28 +2,28 @@
 
 namespace POCService.Controllers
 {
-    public class MySQLController : BaseController
+    public class MySQLController : IBaseController
     {
         private readonly TagController _tagController = new TagController();
         private readonly ServerController _serverController = new ServerController();
 
-        public void addReadings(int numberOfReadings, bool FirstTime)
+        public void AddReadings(int numberOfReadings, bool FirstTime)
         {
             _tagController.AddReadings(numberOfReadings, FirstTime);
         }
 
-        public void addServer(bool FirstTime)
+        public void AddServer(bool FirstTime)
         {
             _serverController.AddServer(FirstTime);
         }
 
         //number gebruiken
-        public void removeReadings(int number, bool FirstTime)
+        public void RemoveReadings(int number, bool FirstTime)
         {
             _tagController.RemoveReadings(number, FirstTime);
         }
 
-        public void addTag(bool FirstTime)
+        public void AddTag(bool FirstTime)
         {
             _tagController.AddTag(FirstTime);
         }

@@ -1,10 +1,11 @@
-﻿using MySqlConnector;
+﻿using Dapper;
+using MySqlConnector;
 using POCService.Enums;
-//using POCService.DataContexts.MySQL;
 using POCService.Logging;
 using SharedLib.Data;
 using System;
 using System.Collections.Generic;
+using Z.Dapper.Plus;
 using System.Data;
 using System.Text;
 
@@ -23,28 +24,25 @@ namespace POCService.Controllers.Dapper
             int amountRecords = 1;
             try
             {
-                List<string> s = _serverController.GetServers();
-                string cmdStr = @"INSERT INTO tag (TagId, Name, NodeId, Type, BufferHours, SamplingInterval, QueueSize, DiscardOldest, ServerId)
-                                VALUES (@TagId, @Name, @NodeId, @Type, @BufferHours, @SamplingInterval, @QueueSize, @DiscardOldest, @ServerId);";
-                Console.WriteLine(cmdStr);
-                using MySqlConnection mConnection = new MySqlConnection(conn);
-                mConnection.Open();
-                using (MySqlCommand myCmd = new MySqlCommand(cmdStr, mConnection))
+                List<string> serverIDs = _serverController.GetServersIDs();
+
+                Guid TagId = Guid.NewGuid();
+                string Name = t.Name;
+                Guid NodeId = Guid.NewGuid();
+                string Type = t.Type;
+                uint BufferHours = t.BufferHours;
+                uint SamplingInterval = t.SamplingInterval;
+                uint QueueSize = t.QueueSize;
+                bool DiscardOldest = t.DiscardOldest;
+                string ServerId = serverIDs[0];
+
+                using (MySqlConnection mConnection = new MySqlConnection(conn))
                 {
-                    myCmd.CommandType = CommandType.Text;
-                    myCmd.Parameters.AddWithValue("@TagId", Guid.NewGuid());
-                    myCmd.Parameters.AddWithValue("@Name", t.Name);
-                    myCmd.Parameters.AddWithValue("@NodeId", Guid.NewGuid());
-                    myCmd.Parameters.AddWithValue("@Type", t.Type);
-                    myCmd.Parameters.AddWithValue("@BufferHours", t.BufferHours);
-                    myCmd.Parameters.AddWithValue("@SamplingInterval", t.SamplingInterval);
-                    myCmd.Parameters.AddWithValue("@QueueSize", t.QueueSize);
-                    myCmd.Parameters.AddWithValue("@DiscardOldest", t.DiscardOldest);
-                    myCmd.Parameters.AddWithValue("@ServerId", s[0]);
-                    myCmd.ExecuteNonQuery();
+                    mConnection.Open();
+                    mConnection.Execute(@"INSERT INTO tag (TagId, Name, NodeId, Type, BufferHours, SamplingInterval, QueueSize, DiscardOldest, ServerId)
+                                VALUES (@TagId, @Name, @NodeId, @Type, @BufferHours, @SamplingInterval, @QueueSize, @DiscardOldest, @ServerId);", new { TagId, Name, NodeId, Type, BufferHours, SamplingInterval, QueueSize, DiscardOldest, ServerId });
                 }
-                log.stopTimer(amountRecords, QueriesEnum.ADDTAG, TechnologiesEnum.RAWMYSQL, firsttime);
-                mConnection.Close();
+                log.stopTimer(amountRecords, QueriesEnum.ADDTAG, TechnologiesEnum.DAPPER, firsttime);
             }
             catch (Exception e)
             {
@@ -55,27 +53,29 @@ namespace POCService.Controllers.Dapper
         public void AddReadings(int numberOfReadings, bool firstime)
         {
             log.startTimer();
-            StringBuilder sCommand = new StringBuilder("INSERT INTO reading (ReadingId, Created, Quality, StringValue, TagId, IntegerValue, UnsignedIntegerValue, FloatValue) VALUES");
             using (MySqlConnection mConnection = new MySqlConnection(conn))
             {
-                List<string> Rows = new List<string>();
+                List<Reading> Rows = new List<Reading>();
+                string stringDate = DateTime.UtcNow.ToString();
+                Random rnd = new Random();
+                
                 for (int i = 0; i < numberOfReadings; i++)
                 {
-                    Rows.Add(string.Format("('{0}','{1}' ,'{2}','{3}','{4}','{5}','{6}','{7}')", MySqlHelper.EscapeString(Guid.NewGuid().ToString()), MySqlHelper.EscapeString(DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")),
-                        MySqlHelper.EscapeString("good"), MySqlHelper.EscapeString("stringvalue"), MySqlHelper.EscapeString("'2fcc3b10-3697-465d-9bcb-395752754415'"), MySqlHelper.EscapeString("123789"),
-                        MySqlHelper.EscapeString("5233"), MySqlHelper.EscapeString("415.23")));
+                    Reading reading = new Reading
+                    {
+                        ReadingId = Guid.NewGuid().ToString(),
+                        Created = DateTime.Parse(stringDate),
+                        Quality = "MYSQL",
+                        StringValue = "MYSQL",
+                        IntegerValue = rnd.Next(0, 100000000),
+                        UnsignedIntegerValue = 6874833,
+                        FloatValue = 633.5423
+                    };
+                    Rows.Add(reading);
                 }
-                sCommand.Append(string.Join(",", Rows));
-                sCommand.Append(";");
-                mConnection.Open();
-                using (MySqlCommand myCmd = new MySqlCommand(sCommand.ToString(), mConnection))
-                {
-                    myCmd.CommandType = CommandType.Text;
-                    myCmd.ExecuteNonQuery();
-                }
-                mConnection.Close();
+                mConnection.BulkInsert(Rows);
             }
-            log.stopTimer(numberOfReadings, QueriesEnum.ADDREADINGS, TechnologiesEnum.RAWMYSQL, firstime);
+            log.stopTimer(numberOfReadings, QueriesEnum.ADDREADINGS, TechnologiesEnum.DAPPER, firstime);
         }
 
         public void RemoveReadings(int number, bool FirstTime)
@@ -90,7 +90,7 @@ namespace POCService.Controllers.Dapper
                 myCmd.ExecuteNonQuery();
             }
             mConnection.Close();
-            log.stopTimer(number, QueriesEnum.REMOVEREADINGS, TechnologiesEnum.RAWMYSQL, FirstTime);
+            log.stopTimer(number, QueriesEnum.REMOVEREADINGS, TechnologiesEnum.DAPPER, FirstTime);
         }
     }
 }

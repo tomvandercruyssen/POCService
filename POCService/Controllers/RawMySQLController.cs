@@ -11,26 +11,26 @@ using System.Data.Common;
 
 namespace POCService.Controllers
 {
-    public class RawMySQLController : BaseController
+    public class RawMySQLController : IBaseController
     {
-        private TagController _tagController = new TagController();
-        private ServerController _serverController = new ServerController();
+        private readonly TagController _tagController = new TagController();
+        private readonly ServerController _serverController = new ServerController();
 
-        public void addReadings(int numberOfReadings, bool FirstTime)
+        public void AddReadings(int numberOfReadings, bool FirstTime)
         {
             _tagController.AddReadings(numberOfReadings, FirstTime);
         }
 
-        public void addServer(bool FirstTime)
+        public void AddServer(bool FirstTime)
         {
             _serverController.AddServer(FirstTime);
         }
-        public void removeReadings(int number, bool FirstTime)
+        public void RemoveReadings(int number, bool FirstTime)
         {
             _tagController.RemoveReadings(number, FirstTime);
         }
 
-        public void addTag(bool FirstTime)
+        public void AddTag(bool FirstTime)
         {
             _tagController.AddTag(FirstTime);
         }

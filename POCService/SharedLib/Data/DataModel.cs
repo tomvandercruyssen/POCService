@@ -38,13 +38,13 @@ namespace SharedLib.Data
         [JsonPropertyName("value")]
         public string Value { get; set; }
     }
-    //[Index("TaxgId", 1)]
+    //[Index("TaggId", 1)]
     //[Index("ReadingId", IsUnique = true)]
     public class Reading
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string ReadingId { get; set; } //= new Guid();
+        public string ReadingId { get; set; } = Guid.NewGuid().ToString();
         public DateTime Created { get; set; }
         public string Quality { get; set; }
         public string StringValue { get; set; }
@@ -114,9 +114,9 @@ namespace SharedLib.Data
         public string Protocol { get; set; } = "2";
         public string TimeZone { get; set; } = "timezone1";
         public uint PublishingInterval { get; set; } = 4000;
-        public uint MaxNotifications { get; set; } = 0;
+        public uint MaxNotifications { get; set; } = 10;
         public uint SessionTimeOut { get; set; } = 40000;
-        public uint MaxKeepAlive { get; set; } = 0;
+        public uint MaxKeepAlive { get; set; } = 10;
         public uint LifetimeCount { get; set; } = 0;
         public bool ReconnectOnSubscriptionDelete { get; set; } = true;
         public bool Enabled { get; set; } = true;

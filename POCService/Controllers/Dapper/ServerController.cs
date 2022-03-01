@@ -1,11 +1,11 @@
 ﻿//using POCService.DataContexts.MySQL;
+using Dapper;
 using MySqlConnector;
 using POCService.Enums;
 using POCService.Logging;
 using SharedLib.Data;
 using System;
 using System.Collections.Generic;
-using System.Data;
 
 namespace POCService.Controllers.Dapper
 {
@@ -15,63 +15,49 @@ namespace POCService.Controllers.Dapper
         private readonly Logger log = new Logger();
 
         private readonly string conn = "server = localhost; port = 3306; user = root; password = Azerty123; database = poc";
-        public List<string> GetServers()
+        public List<string> GetServersIDs()
         {
-            List<string> servers = new List<string>();
+            List<string> serverIDLijst = new List<string>();
             using (MySqlConnection mConnection = new MySqlConnection(conn))
             {
                 mConnection.Open();
-                using (MySqlCommand cmd = new MySqlCommand("Select * from server", mConnection))
+                IEnumerable<Server> serverLijst = mConnection.Query<Server>("Select ServerId from server");
+                foreach (Server server in serverLijst)
                 {
-                    MySqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        servers.Add(reader.GetString("ServerId"));
-                    }
+                    serverIDLijst.Add(server.ServerId);
                 }
                 mConnection.Close();
             }
-            return servers;
+            return serverIDLijst;
         }
         public void AddServer(bool FirstTime)
         {
             int amountRecords = 0;
             Server s = new Server();
             log.startTimer();
-            string FKOFF = "SET FOREIGN_KEY_CHECKS = 0";
-            string cmdStr = @"INSERT INTO server (ServerId, Enabled, Endpoint, LifeTimeCount, MaxKeepAlive, MaxNotifications, Name, 
-                            Protocol, PublishingInterval, ReconnectOnSubscriptionDelete, SessionTimeOut, TimeZone, ServerCredentialsId)
-                            VALUES (@ServerId, @Enabled, @Endpoint, @LifetimeCount, @MaxKeepAlive, @MaxNotifications, @Name, @Protocol, @PublishingInterval, @ReconnectOnSubscriptionDelete,
-                            @SessionTimeOut, @TimeZone, @Credentials);";
-            Console.WriteLine(cmdStr);
+            Guid ServerId = Guid.NewGuid();
+            int Enabled = Convert.ToInt32(s.Enabled);
+            string Endpoint = s.Endpoint;
+            int LifetimeCount = (int)s.LifetimeCount;
+            uint MaxKeepAlive = s.MaxKeepAlive;
+            uint MaxNotifications = s.MaxNotifications;
+            string Name = s.Name;
+            string Protocol = s.Protocol;
+            uint PublishingInterval = s.PublishingInterval;
+            bool ReconnectOnSubscriptionDelete = s.ReconnectOnSubscriptionDelete;
+            uint SessionTimeOut = s.SessionTimeOut;
+            string TimeZone = s.TimeZone;
+            Guid ServerCredentialsId = Guid.Parse("06861fb8-48c8-470d-894e-c98c7e193cc4");
             using (MySqlConnection mConnection = new MySqlConnection(conn))
             {
                 mConnection.Open();
-                using (MySqlCommand cmd = new MySqlCommand(FKOFF, mConnection))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-                using (MySqlCommand myCmd = new MySqlCommand(cmdStr, mConnection))
-                {
-                    myCmd.CommandType = CommandType.Text;
-                    myCmd.Parameters.AddWithValue("@ServerId", Guid.NewGuid());
-                    myCmd.Parameters.AddWithValue("@Enabled", Convert.ToInt32(s.Enabled));
-                    myCmd.Parameters.AddWithValue("@Endpoint", s.Endpoint);
-                    myCmd.Parameters.AddWithValue("@LifetimeCount", (int)s.LifetimeCount);
-                    myCmd.Parameters.AddWithValue("@MaxKeepAlive", s.MaxKeepAlive);
-                    myCmd.Parameters.AddWithValue("@MaxNotifications", s.MaxNotifications);
-                    myCmd.Parameters.AddWithValue("@Name", s.Name);
-                    myCmd.Parameters.AddWithValue("@Protocol", s.Protocol);
-                    myCmd.Parameters.AddWithValue("@PublishingInterval", s.PublishingInterval);
-                    myCmd.Parameters.AddWithValue("@ReconnectOnSubscriptionDelete", s.ReconnectOnSubscriptionDelete);
-                    myCmd.Parameters.AddWithValue("@SessionTimeOut", s.SessionTimeOut);
-                    myCmd.Parameters.AddWithValue("@TimeZone", s.TimeZone);
-                    myCmd.Parameters.AddWithValue("@Credentials", Guid.NewGuid());
-                    myCmd.ExecuteNonQuery();
-                }
+                mConnection.Execute(@"INSERT INTO server (ServerId, Enabled, Endpoint, LifeTimeCount, MaxKeepAlive, MaxNotifications, Name, 
+                            Protocol, PublishingInterval, ReconnectOnSubscriptionDelete, SessionTimeOut, TimeZone, ServerCredentialsId)
+                            VALUES (@ServerId, @Enabled, @Endpoint, @LifetimeCount, @MaxKeepAlive, @MaxNotifications, @Name, @Protocol, @PublishingInterval, @ReconnectOnSubscriptionDelete,
+                            @SessionTimeOut, @TimeZone, @ServerCredentialsId);", new {ServerId, Enabled, Endpoint, LifetimeCount, MaxKeepAlive, MaxNotifications, Name, Protocol, PublishingInterval, ReconnectOnSubscriptionDelete, SessionTimeOut,TimeZone, ServerCredentialsId });
                 mConnection.Close();
             }
-            log.stopTimer(amountRecords, QueriesEnum.ADDSERVER, TechnologiesEnum.RAWMYSQL, FirstTime);
+            log.stopTimer(amountRecords, QueriesEnum.ADDSERVER, TechnologiesEnum.DAPPER, FirstTime);
         }
     }
 }

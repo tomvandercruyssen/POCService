@@ -93,8 +93,8 @@ namespace POCService.Controllers.MySQL
             Reading reading = new Reading
             {
                 Created = DateTime.Parse(stringDate),
-                Quality = "TEST",
-                StringValue = "stringvalue",
+                Quality = "MYSQL",
+                StringValue = "MYSQL",
                 IntegerValue = rnd.Next(0, 100000000),
                 UnsignedIntegerValue = 6874833,
                 FloatValue = 633.5423

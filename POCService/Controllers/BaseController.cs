@@ -1,16 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SharedLib.DTOSQLite;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace POCService.Controllers
+﻿namespace POCService.Controllers
 {
-    public interface BaseController
+    public interface IBaseController
     {
-        public void addReadings(int number, bool FirstTime);
-        public void removeReadings(int number, bool FirstTime);
-        public void addServer(bool FirstTime);
-        public void addTag(bool FirstTime);
+        public void AddReadings(int number, bool FirstTime);
+        public void RemoveReadings(int number, bool FirstTime);
+        public void AddServer(bool FirstTime);
+        public void AddTag(bool FirstTime);
     }
 }

@@ -9,6 +9,7 @@ namespace POCService.Enums
         MySQL,
         SQLite,
         RAWMYSQL,
+        DAPPER,
         RANDOM,
         ANALYSIS
     }
