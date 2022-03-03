@@ -49,6 +49,21 @@ namespace POCService.Controllers.Dapper
                 Console.WriteLine(e.Message);
             }
         }
+        public List<string> GetTagIDs()
+        {
+            List<string> tagIDLijst = new List<string>();
+            using (MySqlConnection mConnection = new MySqlConnection(conn))
+            {
+                mConnection.Open();
+                IEnumerable<Tag> tagLijst = mConnection.Query<Tag>("Select TagId from tag");
+                foreach (Tag tag in tagLijst)
+                {
+                    tagIDLijst.Add(tag.TagId);
+                }
+                mConnection.Close();
+            }
+            return tagIDLijst;
+        }
 
         public void AddReadings(int numberOfReadings, bool firstime)
         {
@@ -58,6 +73,7 @@ namespace POCService.Controllers.Dapper
                 List<Reading> Rows = new List<Reading>();
                 string stringDate = DateTime.UtcNow.ToString();
                 Random rnd = new Random();
+                List<string>tagids = GetTagIDs();
                 
                 for (int i = 0; i < numberOfReadings; i++)
                 {
@@ -69,7 +85,8 @@ namespace POCService.Controllers.Dapper
                         StringValue = "MYSQL",
                         IntegerValue = rnd.Next(0, 100000000),
                         UnsignedIntegerValue = 6874833,
-                        FloatValue = 633.5423
+                        FloatValue = 633.5423,
+                        TagId = tagids[rnd.Next(0,tagids.Count)]
                     };
                     Rows.Add(reading);
                 }
@@ -78,17 +95,22 @@ namespace POCService.Controllers.Dapper
             log.stopTimer(numberOfReadings, QueriesEnum.ADDREADINGS, TechnologiesEnum.DAPPER, firstime);
         }
 
-        public void RemoveReadings(int number, bool FirstTime)
+        public void RemoveReadings(int bufferTijd, bool FirstTime)
         {
             log.startTimer();
-            string cmdStr = @"DELETE FROM reading limit " + number;
+            int number = 0;
+            Random rnd = new Random();
+            List<string> tagIds =GetTagIDs();
+            string tagId = tagIds[rnd.Next(0, tagIds.Count)];
+            string cmdStr = @"DELETE FROM poc.reading WHERE reading.TagId = '" + tagId + "' AND TIMESTAMPDIFF(HOUR, reading.Created, NOW() ) > " + bufferTijd;
             Console.WriteLine(cmdStr);
             using MySqlConnection mConnection = new MySqlConnection(conn);
             mConnection.Open();
             using (MySqlCommand myCmd = new MySqlCommand(cmdStr, mConnection))
             {
-                myCmd.ExecuteNonQuery();
+                number = myCmd.ExecuteNonQuery();
             }
+            Console.WriteLine(number);
             mConnection.Close();
             log.stopTimer(number, QueriesEnum.REMOVEREADINGS, TechnologiesEnum.DAPPER, FirstTime);
         }

@@ -53,12 +53,13 @@ namespace SharedLib.Data
         public double FloatValue { get; set; }
         [Required]
         [ForeignKey("TagId")]
-        public Tag Tag { get; set; }
+        public string TagId { get; set; }
 
         public string GetValueString()
         {
             string s = "";
-            switch (Tag.Type.ToLower())
+            Tag t = new Tag();
+            switch (t.Type.ToLower())
             {
                 case "string":
                     s = StringValue;
@@ -79,7 +80,8 @@ namespace SharedLib.Data
         }
         public void AddValue(object value)
         {
-            switch (Tag.Type.ToLower())
+            Tag t = new Tag();
+            switch (t.Type.ToLower())
             {
                 case "string":
                     StringValue = value as string;

@@ -137,7 +137,7 @@ namespace POCService
                             _controller.AddReadings(number, FirstTime);
                             break;
                         case QueriesEnum.REMOVEREADINGS:
-                            _controller.RemoveReadings(number, FirstTime);
+                            _controller.RemoveReadings(0, FirstTime);
                             break;
                         case QueriesEnum.ADDTAG:
                             _controller.AddTag(FirstTime);

@@ -16,22 +16,12 @@ namespace POCService.Controllers.MySQL
         private readonly ServerController _serverController = new ServerController();
         private readonly Logger log = new Logger();
 
-        public ActionResult<List<TagDTO>> GetAllTags()
+        public List<Tag> GetAllTags()
         {
             System.Diagnostics.Stopwatch watch = System.Diagnostics.Stopwatch.StartNew();
             EdgeDataContext _context = new EdgeDataContext();
-            try
-            {
-                watch.Stop();
-                long elapsedMs = watch.ElapsedMilliseconds;
-                return Ok(_context.Tag.Include(t => t.ServerId).Select(t => new TagDTO(t)).ToList());
-            }
-            catch (Exception e)
-            {
-                watch.Stop();
-                long elapsedMs = watch.ElapsedMilliseconds;
-                return BadRequest(e.Message);
-            }
+            List<Tag> tags = _context.Tag.ToList();
+            return tags;
         }
 
         public ActionResult<TagDTO> AddTag(bool FirstTime)
@@ -74,62 +64,72 @@ namespace POCService.Controllers.MySQL
         {
             log.startTimer();
             EdgeDataContext _context = new EdgeDataContext();
-            List<ServerDTO> servers = _context.Server.Include(s => s.Credentials).Include(s => s.Tags).Select(s => new ServerDTO(s)).ToList();
-            string id = servers[0].TagIds[0];
+            List<Tag> tags = GetAllTags();
+            Random rnd = new Random();
             for (int i = 0; i < numberOfReadings; i++)
             {
-                AddReading(id);
+                string tagid = tags[rnd.Next(0, tags.Count)].TagId;
+                string stringDate = DateTime.UtcNow.ToString();
+                Reading reading = new Reading
+                {
+                    Created = DateTime.Parse(stringDate),
+                    Quality = "MYSQL",
+                    StringValue = "MYSQL",
+                    IntegerValue = rnd.Next(0, 100000000),
+                    UnsignedIntegerValue = 6874833,
+                    FloatValue = 633.5423
+                };
+
+                if (tagid is null)
+                {
+                    return;
+                }
+                reading.TagId = tagid;
+                try
+                {
+                    _context.Reading.Add(reading);
+                }
+                catch (DbUpdateException)
+                {
+                    return;
+                }
             }
+            int amountRecords = _context.SaveChanges();
             log.stopTimer(numberOfReadings, QueriesEnum.ADDREADINGS, TechnologiesEnum.MySQL, FirstTime);
         }
 
-        public void AddReading(string tagid)
-        {
-            EdgeDataContext _context = new EdgeDataContext();
-            Tag t = _context.Tag.Find(tagid);
-            string stringDate = DateTime.UtcNow.ToString();
-
-            Random rnd = new Random();
-            Reading reading = new Reading
-            {
-                Created = DateTime.Parse(stringDate),
-                Quality = "MYSQL",
-                StringValue = "MYSQL",
-                IntegerValue = rnd.Next(0, 100000000),
-                UnsignedIntegerValue = 6874833,
-                FloatValue = 633.5423
-            };
-
-            if (t is null)
-            {
-                return;
-            }
-            reading.Tag = t;
-            try
-            {
-                _context.Reading.Add(reading);
-                _context.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                AddReading(tagid);
-                return;
-            }
-        }
-
-        public void RemoveReadings(int number, bool FirstTime)
+        //public void RemoveReadings(int number, bool FirstTime)
+        //{
+        //    log.startTimer();
+        //    EdgeDataContext _context = new EdgeDataContext();
+        //    List<Reading> readingList = _context.Reading.ToList();
+        //    for (int i = 0; i < number; i++)
+        //    {
+        //        _context.Reading.Remove(readingList[i]);
+        //    }
+        //    int amountRecords = _context.SaveChanges();
+        //    log.stopTimer(amountRecords, QueriesEnum.REMOVEREADINGS, TechnologiesEnum.MySQL, FirstTime);
+        //}
+        public void RemoveReadings(int bufferTijd, bool FirstTime)
         {
             log.startTimer();
+            Random rnd = new Random();
             EdgeDataContext _context = new EdgeDataContext();
-            DbSet<Reading> readings = _context.Reading;
-            List<Reading> readingList = readings.ToList();
-            for (int i = 0; i < number; i++)
+            List<Reading> readingList = _context.Reading.ToList();
+            List<Tag> tags = _context.Tag.ToList();
+            string tagId = tags[rnd.Next(0, tags.Count)].TagId;
+            foreach (Reading reading in readingList)
             {
-                _context.Reading.Remove(readingList[i]);
+                int timeAlive = DateTime.Now.Subtract(reading.Created).Hours;
+                if ( reading.TagId == tagId && timeAlive > bufferTijd)
+                {
+                    _context.Reading.Remove(reading);
+                }
             }
             int amountRecords = _context.SaveChanges();
             log.stopTimer(amountRecords, QueriesEnum.REMOVEREADINGS, TechnologiesEnum.MySQL, FirstTime);
         }
+
 
     }
 }
