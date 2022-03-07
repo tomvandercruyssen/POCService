@@ -67,13 +67,13 @@ namespace POCService.Controllers.Dapper
 
         public void AddReadings(int numberOfReadings, bool firstime)
         {
+            List<string> tagids = GetTagIDs();
             log.startTimer();
             using (MySqlConnection mConnection = new MySqlConnection(conn))
             {
                 List<Reading> Rows = new List<Reading>();
                 string stringDate = DateTime.UtcNow.ToString();
                 Random rnd = new Random();
-                List<string>tagids = GetTagIDs();
                 
                 for (int i = 0; i < numberOfReadings; i++)
                 {
@@ -97,11 +97,12 @@ namespace POCService.Controllers.Dapper
 
         public void RemoveReadings(int bufferTijd, bool FirstTime)
         {
+
+            Random rnd = new Random();
+            List<string> tagIds = GetTagIDs();
+            string tagId = tagIds[rnd.Next(0, tagIds.Count)];
             log.startTimer();
             int number = 0;
-            Random rnd = new Random();
-            List<string> tagIds =GetTagIDs();
-            string tagId = tagIds[rnd.Next(0, tagIds.Count)];
             string cmdStr = @"DELETE FROM poc.reading WHERE reading.TagId = '" + tagId + "' AND TIMESTAMPDIFF(HOUR, reading.Created, NOW() ) > " + bufferTijd;
             Console.WriteLine(cmdStr);
             using MySqlConnection mConnection = new MySqlConnection(conn);

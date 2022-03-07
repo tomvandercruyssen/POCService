@@ -40,7 +40,7 @@ namespace POCService
                             _continue = false;
                             break;
                         case TechnologiesEnum.RANDOM:
-                            RandomQuery();
+                            testData();
                             break;
                         case TechnologiesEnum.ANALYSIS:
                             GetLogs();
@@ -164,7 +164,7 @@ namespace POCService
         {
             bool FirstTime = true;
             IBaseController _controller = new SQLiteController();
-            int[] numbers = { 100, 1000, 10000, 100000 };
+            int[] numbers = { 100, 1000, 10000, 50000 };
             for (int i = 0; i < 4; i++)
             {
                 TechnologiesEnum tech = Enum.Parse<TechnologiesEnum>(i.ToString());
@@ -193,7 +193,15 @@ namespace POCService
                     {
 
                         _controller.AddReadings(numbers[j], FirstTime);
-                        _controller.RemoveReadings(numbers[j], FirstTime);
+                        if(tech == TechnologiesEnum.MySQL || tech == TechnologiesEnum.DAPPER)
+                        {
+                            _controller.RemoveReadings(0, FirstTime);
+                        }
+                        else
+                        {
+
+                            _controller.RemoveReadings(numbers[j], FirstTime);
+                        }
                         _controller.AddTag(FirstTime);
                         _controller.AddServer(FirstTime);
                     }
